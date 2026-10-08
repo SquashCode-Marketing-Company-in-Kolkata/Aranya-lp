@@ -12136,10 +12136,12 @@ var import_react = __toESM(require_react());
 async function submitLead(fields, formSource) {
   const params = new URLSearchParams(window.location.search);
   const tracking = Object.fromEntries(["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"].map((key) => [key, params.get(key) || ""]));
+  const phoneDigits = String(fields.phone || "").replace(/\D/g, "");
+  const phone = phoneDigits.startsWith("91") && phoneDigits.length === 12 ? phoneDigits.slice(2) : phoneDigits;
   const response = await fetch("/api/leads", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...fields, ...tracking, form_source: formSource, source_url: window.location.href })
+    body: JSON.stringify({ ...fields, phone, ...tracking, form_source: formSource, source_url: window.location.href })
   });
   if (!response.ok) throw new Error("Unable to send your enquiry. Please try again.");
 }
@@ -12253,6 +12255,74 @@ function useParallax(speed = 0.15) {
 function GoldDivider({ style }) {
   return /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, ...style } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { height: 1, flex: 1, background: "linear-gradient(to right, transparent, #c9a96e)" } }), /* @__PURE__ */ import_react.default.createElement("div", { style: { width: 5, height: 5, borderRadius: "50%", background: "#c9a96e", flexShrink: 0 } }), /* @__PURE__ */ import_react.default.createElement("div", { style: { height: 1, flex: 1, background: "linear-gradient(to left, transparent, #c9a96e)" } }));
 }
+function NatureSoundControl() {
+  const [playing, setPlaying] = (0, import_react.useState)(false);
+  const audioRef = (0, import_react.useRef)(null);
+  const stopSoundscape = (0, import_react.useCallback)(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.pause();
+    setPlaying(false);
+  }, []);
+  const startSoundscape = (0, import_react.useCallback)(() => {
+    const audio = audioRef.current;
+    if (!audio) return Promise.resolve();
+    return audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+  }, []);
+  (0, import_react.useEffect)(() => {
+    const audio = audioRef.current;
+    if (!audio) return void 0;
+    audio.volume = 0.18;
+    startSoundscape();
+    const unlockAudio = () => {
+      startSoundscape().then(() => {
+        if (!audio.paused) {
+          window.removeEventListener("pointerdown", unlockAudio);
+          window.removeEventListener("keydown", unlockAudio);
+          window.removeEventListener("touchstart", unlockAudio);
+        }
+      });
+    };
+    window.addEventListener("pointerdown", unlockAudio, { passive: true });
+    window.addEventListener("keydown", unlockAudio);
+    window.addEventListener("touchstart", unlockAudio, { passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+      audio.pause();
+    };
+  }, [startSoundscape]);
+  const toggle = () => {
+    if (playing) {
+      stopSoundscape();
+    } else startSoundscape();
+  };
+  return /* @__PURE__ */ import_react.default.createElement(import_react.default.Fragment, null, /* @__PURE__ */ import_react.default.createElement(
+    "audio",
+    {
+      ref: audioRef,
+      src: "/uploads/Feel%20the%20sound%20of%20nature%20in%20kerala%20%23nature%20%23peaceful%20%23travel%20%23monsoon.mp3",
+      autoPlay: true,
+      loop: true,
+      preload: "auto",
+      onPlay: () => setPlaying(true),
+      onPause: () => setPlaying(false)
+    }
+  ), /* @__PURE__ */ import_react.default.createElement(
+    "button",
+    {
+      type: "button",
+      onClick: toggle,
+      "aria-pressed": playing,
+      "aria-label": playing ? "Turn off nature sounds" : "Turn on nature sounds",
+      title: playing ? "Nature sounds on \u2014 click to mute" : "Play nature sounds",
+      style: { position: "fixed", right: "clamp(16px, 3vw, 32px)", bottom: "clamp(16px, 3vw, 32px)", zIndex: 600, display: "inline-flex", alignItems: "center", gap: 9, padding: "11px 14px", border: "1px solid rgba(201,169,110,0.55)", borderRadius: 999, background: playing ? "#c9a96e" : "rgba(10,19,10,0.88)", color: playing ? "#1a2e1a" : "#f5f0e8", boxShadow: "0 8px 24px rgba(0,0,0,0.2)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", cursor: "pointer", fontFamily: "DM Sans", fontSize: 10, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", transition: "background 0.25s ease, color 0.25s ease" }
+    },
+    /* @__PURE__ */ import_react.default.createElement("span", { "aria-hidden": "true", style: { fontSize: 15, lineHeight: 1 } }, playing ? "\u266A" : "\u266C"),
+    /* @__PURE__ */ import_react.default.createElement("span", null, playing ? "Nature sounds on" : "Nature sounds")
+  ));
+}
 function TreeLine({ opacity = 0.07, dark = "#0a1a0a" }) {
   const trees = [[0, 200], [80, 250], [160, 180], [260, 255], [370, 195], [480, 240], [600, 170], [710, 230], [830, 210], [950, 255], [1070, 180], [1190, 220], [1310, 200], [1400, 240]];
   return /* @__PURE__ */ import_react.default.createElement("svg", { style: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "40%", pointerEvents: "none" }, viewBox: "0 0 1440 260", preserveAspectRatio: "xMidYMax meet" }, trees.map(([x, h], i) => {
@@ -12303,7 +12373,7 @@ function PopupModal({ isOpen, onClose, defaultInterest }) {
   const validate = () => {
     const e = {};
     if (!form.name.trim()) e.name = true;
-    if (!form.phone.trim() || !/^\+?[\d\s\-]{7,}$/.test(form.phone)) e.phone = true;
+    if (!/^\d{10}$/.test(form.phone)) e.phone = true;
     if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = true;
     return e;
   };
@@ -12366,7 +12436,7 @@ function PopupModal({ isOpen, onClose, defaultInterest }) {
     },
     /* @__PURE__ */ import_react.default.createElement("span", null, "View Brochure (PDF)"),
     /* @__PURE__ */ import_react.default.createElement("span", { style: { fontSize: 13 } }, "\u2197")
-  )) : /* @__PURE__ */ import_react.default.createElement("form", { onSubmit: submit, noValidate: true }, /* @__PURE__ */ import_react.default.createElement("div", { className: "modal-form-grid", style: { gap: 10, marginBottom: 10 } }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Full Name *"), /* @__PURE__ */ import_react.default.createElement("input", { type: "text", value: form.name, placeholder: "Your name", style: inp(errors.name), onChange: (e) => setForm((f) => ({ ...f, name: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = errors.name ? "#e07a5f" : "rgba(26,46,26,0.2)" })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Phone *"), /* @__PURE__ */ import_react.default.createElement("input", { type: "tel", value: form.phone, placeholder: "+91 \u2014\u2014\u2014", style: inp(errors.phone), onChange: (e) => setForm((f) => ({ ...f, phone: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = errors.phone ? "#e07a5f" : "rgba(26,46,26,0.2)" }))), /* @__PURE__ */ import_react.default.createElement("div", { className: "modal-form-grid", style: { gap: 10, marginBottom: 10 } }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Email *"), /* @__PURE__ */ import_react.default.createElement("input", { type: "email", value: form.email, placeholder: "your@email.com", style: inp(errors.email), onChange: (e) => setForm((f) => ({ ...f, email: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = errors.email ? "#e07a5f" : "rgba(26,46,26,0.2)" })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Apartment Type"), /* @__PURE__ */ import_react.default.createElement("select", { value: form.interest, style: { ...inp(false), cursor: "pointer" }, onChange: (e) => setForm((f) => ({ ...f, interest: e.target.value })) }, /* @__PURE__ */ import_react.default.createElement("option", { value: "" }, "Select type"), /* @__PURE__ */ import_react.default.createElement("option", { value: "3bhk" }, "3 BHK \u2014 Celestial"), /* @__PURE__ */ import_react.default.createElement("option", { value: "3bhk-t" }, "3 BHK + Terrace \u2014 Garden Home"), /* @__PURE__ */ import_react.default.createElement("option", { value: "4bhk" }, "4 BHK \u2014 Prestige"), /* @__PURE__ */ import_react.default.createElement("option", { value: "4bhk-t" }, "4 BHK + Terrace \u2014 Signature")))), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginBottom: 20 } }, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Message (Optional)"), /* @__PURE__ */ import_react.default.createElement("textarea", { value: form.message, placeholder: "Any questions or preferences...", rows: 3, style: { ...inp(false), resize: "vertical" }, onChange: (e) => setForm((f) => ({ ...f, message: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = "rgba(26,46,26,0.2)" })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" } }, /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 10, fontWeight: 300, color: "rgba(26,46,26,0.38)", flex: 1, minWidth: 180, lineHeight: 1.6 } }, "Held in strict confidence."), /* @__PURE__ */ import_react.default.createElement(
+  )) : /* @__PURE__ */ import_react.default.createElement("form", { onSubmit: submit, noValidate: true }, /* @__PURE__ */ import_react.default.createElement("div", { className: "modal-form-grid", style: { gap: 10, marginBottom: 10 } }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Full Name *"), /* @__PURE__ */ import_react.default.createElement("input", { type: "text", value: form.name, placeholder: "Your name", style: inp(errors.name), onChange: (e) => setForm((f) => ({ ...f, name: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = errors.name ? "#e07a5f" : "rgba(26,46,26,0.2)" })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Phone *"), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex" } }, /* @__PURE__ */ import_react.default.createElement("span", { "aria-hidden": "true", style: { display: "inline-flex", alignItems: "center", padding: "0 12px", border: `1px solid ${errors.phone ? "#e07a5f" : "rgba(26,46,26,0.18)"}`, borderRight: "none", background: "#f7f5f0", fontFamily: "DM Sans", fontSize: 13, color: "#1a2e1a" } }, "+91"), /* @__PURE__ */ import_react.default.createElement("input", { type: "tel", inputMode: "numeric", autoComplete: "tel-national", maxLength: 10, value: form.phone, placeholder: "9876543210", style: { ...inp(errors.phone), borderLeft: "none" }, onChange: (e) => setForm((f) => ({ ...f, phone: e.target.value.replace(/\D/g, "").slice(0, 10) })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = errors.phone ? "#e07a5f" : "rgba(26,46,26,0.2)" })))), /* @__PURE__ */ import_react.default.createElement("div", { className: "modal-form-grid", style: { gap: 10, marginBottom: 10 } }, /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Email *"), /* @__PURE__ */ import_react.default.createElement("input", { type: "email", value: form.email, placeholder: "your@email.com", style: inp(errors.email), onChange: (e) => setForm((f) => ({ ...f, email: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = errors.email ? "#e07a5f" : "rgba(26,46,26,0.2)" })), /* @__PURE__ */ import_react.default.createElement("div", null, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Apartment Type"), /* @__PURE__ */ import_react.default.createElement("select", { value: form.interest, style: { ...inp(false), cursor: "pointer" }, onChange: (e) => setForm((f) => ({ ...f, interest: e.target.value })) }, /* @__PURE__ */ import_react.default.createElement("option", { value: "" }, "Select type"), /* @__PURE__ */ import_react.default.createElement("option", { value: "3bhk" }, "3 BHK \u2014 Celestial"), /* @__PURE__ */ import_react.default.createElement("option", { value: "3bhk-t" }, "3 BHK + Terrace \u2014 Garden Home"), /* @__PURE__ */ import_react.default.createElement("option", { value: "4bhk" }, "4 BHK \u2014 Prestige"), /* @__PURE__ */ import_react.default.createElement("option", { value: "4bhk-t" }, "4 BHK + Terrace \u2014 Signature")))), /* @__PURE__ */ import_react.default.createElement("div", { style: { marginBottom: 20 } }, /* @__PURE__ */ import_react.default.createElement("label", { style: { display: "block", fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(26,46,26,0.5)", marginBottom: 7 } }, "Message (Optional)"), /* @__PURE__ */ import_react.default.createElement("textarea", { value: form.message, placeholder: "Any questions or preferences...", rows: 3, style: { ...inp(false), resize: "vertical" }, onChange: (e) => setForm((f) => ({ ...f, message: e.target.value })), onFocus: (e) => e.target.style.borderColor = "#c9a96e", onBlur: (e) => e.target.style.borderColor = "rgba(26,46,26,0.2)" })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" } }, /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 10, fontWeight: 300, color: "rgba(26,46,26,0.38)", flex: 1, minWidth: 180, lineHeight: 1.6 } }, "Held in strict confidence."), /* @__PURE__ */ import_react.default.createElement(
     "button",
     {
       type: "submit",
@@ -13133,7 +13203,7 @@ function App() {
     setModalInterest(interest || "");
     setModalOpen(true);
   }, []);
-  return /* @__PURE__ */ import_react.default.createElement(ModalCtx.Provider, { value: openModal }, /* @__PURE__ */ import_react.default.createElement(TweaksPanel, { title: "Aranya Tweaks" }, /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Hero" }), /* @__PURE__ */ import_react.default.createElement(TweakSlider, { label: "Overlay Darkness", tweakKey: "heroOverlay", min: 0, max: 60, step: 5, tweaks, setTweak }), /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Brand" }), /* @__PURE__ */ import_react.default.createElement(TweakColor, { label: "Accent (Gold)", tweakKey: "accentColor", tweaks, setTweak })), /* @__PURE__ */ import_react.default.createElement(PopupModal, { isOpen: modalOpen, onClose: () => setModalOpen(false), defaultInterest: modalInterest }), /* @__PURE__ */ import_react.default.createElement(Nav, null), /* @__PURE__ */ import_react.default.createElement(Hero, { tweaks }), /* @__PURE__ */ import_react.default.createElement(StatsBar, null), /* @__PURE__ */ import_react.default.createElement(Manifesto, null), /* @__PURE__ */ import_react.default.createElement(SustainableAtmos, null), /* @__PURE__ */ import_react.default.createElement(WellnessSection, null), /* @__PURE__ */ import_react.default.createElement(ClubAranya, null), /* @__PURE__ */ import_react.default.createElement(HomesSection, null), /* @__PURE__ */ import_react.default.createElement(WalkthroughVideo, null), /* @__PURE__ */ import_react.default.createElement(GallerySection, null), /* @__PURE__ */ import_react.default.createElement(LocationSection, null), /* @__PURE__ */ import_react.default.createElement(DeveloperSection, null), /* @__PURE__ */ import_react.default.createElement(FAQSection, null), /* @__PURE__ */ import_react.default.createElement(Footer, null));
+  return /* @__PURE__ */ import_react.default.createElement(ModalCtx.Provider, { value: openModal }, /* @__PURE__ */ import_react.default.createElement(TweaksPanel, { title: "Aranya Tweaks" }, /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Hero" }), /* @__PURE__ */ import_react.default.createElement(TweakSlider, { label: "Overlay Darkness", tweakKey: "heroOverlay", min: 0, max: 60, step: 5, tweaks, setTweak }), /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Brand" }), /* @__PURE__ */ import_react.default.createElement(TweakColor, { label: "Accent (Gold)", tweakKey: "accentColor", tweaks, setTweak })), /* @__PURE__ */ import_react.default.createElement(PopupModal, { isOpen: modalOpen, onClose: () => setModalOpen(false), defaultInterest: modalInterest }), /* @__PURE__ */ import_react.default.createElement(Nav, null), /* @__PURE__ */ import_react.default.createElement(NatureSoundControl, null), /* @__PURE__ */ import_react.default.createElement(Hero, { tweaks }), /* @__PURE__ */ import_react.default.createElement(StatsBar, null), /* @__PURE__ */ import_react.default.createElement(Manifesto, null), /* @__PURE__ */ import_react.default.createElement(SustainableAtmos, null), /* @__PURE__ */ import_react.default.createElement(WellnessSection, null), /* @__PURE__ */ import_react.default.createElement(ClubAranya, null), /* @__PURE__ */ import_react.default.createElement(HomesSection, null), /* @__PURE__ */ import_react.default.createElement(WalkthroughVideo, null), /* @__PURE__ */ import_react.default.createElement(GallerySection, null), /* @__PURE__ */ import_react.default.createElement(LocationSection, null), /* @__PURE__ */ import_react.default.createElement(DeveloperSection, null), /* @__PURE__ */ import_react.default.createElement(FAQSection, null), /* @__PURE__ */ import_react.default.createElement(Footer, null));
 }
 var App_default = App;
 

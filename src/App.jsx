@@ -106,6 +106,85 @@ import { submitLead } from './submitLead';
       );
     }
 
+    // The supplied Kerala nature recording is kept gentle and can be muted at
+    // any time. Browsers that block audible autoplay will begin playback on
+    // the visitor's first interaction instead.
+    function NatureSoundControl() {
+      const [playing, setPlaying] = useState(false);
+      const audioRef = useRef(null);
+
+      const stopSoundscape = useCallback(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+        audio.pause();
+        setPlaying(false);
+      }, []);
+
+      const startSoundscape = useCallback(() => {
+        const audio = audioRef.current;
+        if (!audio) return Promise.resolve();
+        return audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+      }, []);
+
+      useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return undefined;
+        audio.volume = 0.18;
+        startSoundscape();
+        // Keep trying after a real gesture if the browser initially blocks
+        // audible autoplay. The listeners are removed as soon as it plays.
+        const unlockAudio = () => {
+          startSoundscape().then(() => {
+            if (!audio.paused) {
+              window.removeEventListener('pointerdown', unlockAudio);
+              window.removeEventListener('keydown', unlockAudio);
+              window.removeEventListener('touchstart', unlockAudio);
+            }
+          });
+        };
+        window.addEventListener('pointerdown', unlockAudio, { passive: true });
+        window.addEventListener('keydown', unlockAudio);
+        window.addEventListener('touchstart', unlockAudio, { passive: true });
+        return () => {
+          window.removeEventListener('pointerdown', unlockAudio);
+          window.removeEventListener('keydown', unlockAudio);
+          window.removeEventListener('touchstart', unlockAudio);
+          audio.pause();
+        };
+      }, [startSoundscape]);
+
+      const toggle = () => {
+        if (playing) {
+          stopSoundscape();
+        } else startSoundscape();
+      };
+
+      return (
+        <>
+        <audio
+          ref={audioRef}
+          src="/uploads/Feel%20the%20sound%20of%20nature%20in%20kerala%20%23nature%20%23peaceful%20%23travel%20%23monsoon.mp3"
+          autoPlay
+          loop
+          preload="auto"
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+        />
+        <button
+          type="button"
+          onClick={toggle}
+          aria-pressed={playing}
+          aria-label={playing ? 'Turn off nature sounds' : 'Turn on nature sounds'}
+          title={playing ? 'Nature sounds on — click to mute' : 'Play nature sounds'}
+          style={{ position: 'fixed', right: 'clamp(16px, 3vw, 32px)', bottom: 'clamp(16px, 3vw, 32px)', zIndex: 600, display: 'inline-flex', alignItems: 'center', gap: 9, padding: '11px 14px', border: '1px solid rgba(201,169,110,0.55)', borderRadius: 999, background: playing ? '#c9a96e' : 'rgba(10,19,10,0.88)', color: playing ? '#1a2e1a' : '#f5f0e8', boxShadow: '0 8px 24px rgba(0,0,0,0.2)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', cursor: 'pointer', fontFamily: 'DM Sans', fontSize: 10, fontWeight: 500, letterSpacing: '0.12em', textTransform: 'uppercase', transition: 'background 0.25s ease, color 0.25s ease' }}
+        >
+          <span aria-hidden="true" style={{ fontSize: 15, lineHeight: 1 }}>{playing ? '♪' : '♬'}</span>
+          <span>{playing ? 'Nature sounds on' : 'Nature sounds'}</span>
+        </button>
+        </>
+      );
+    }
+
     function TreeLine({ opacity = 0.07, dark = '#0a1a0a' }) {
       const trees = [[0, 200], [80, 250], [160, 180], [260, 255], [370, 195], [480, 240], [600, 170], [710, 230], [830, 210], [950, 255], [1070, 180], [1190, 220], [1310, 200], [1400, 240]];
       return (
@@ -160,7 +239,7 @@ import { submitLead } from './submitLead';
       const validate = () => {
         const e = {};
         if (!form.name.trim()) e.name = true;
-        if (!form.phone.trim() || !/^\+?[\d\s\-]{7,}$/.test(form.phone)) e.phone = true;
+        if (!/^\d{10}$/.test(form.phone)) e.phone = true;
         if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = true;
         return e;
       };
@@ -242,7 +321,10 @@ import { submitLead } from './submitLead';
                     </div>
                     <div>
                       <label style={{ display: 'block', fontFamily: 'DM Sans', fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(26,46,26,0.5)', marginBottom: 7 }}>Phone *</label>
-                      <input type="tel" value={form.phone} placeholder="+91 ———" style={inp(errors.phone)} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} onFocus={e => e.target.style.borderColor = '#c9a96e'} onBlur={e => e.target.style.borderColor = errors.phone ? '#e07a5f' : 'rgba(26,46,26,0.2)'} />
+                      <div style={{ display: 'flex' }}>
+                        <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center', padding: '0 12px', border: `1px solid ${errors.phone ? '#e07a5f' : 'rgba(26,46,26,0.18)'}`, borderRight: 'none', background: '#f7f5f0', fontFamily: 'DM Sans', fontSize: 13, color: '#1a2e1a' }}>+91</span>
+                        <input type="tel" inputMode="numeric" autoComplete="tel-national" maxLength={10} value={form.phone} placeholder="9876543210" style={{ ...inp(errors.phone), borderLeft: 'none' }} onChange={e => setForm(f => ({ ...f, phone: e.target.value.replace(/\D/g, '').slice(0, 10) }))} onFocus={e => e.target.style.borderColor = '#c9a96e'} onBlur={e => e.target.style.borderColor = errors.phone ? '#e07a5f' : 'rgba(26,46,26,0.2)'} />
+                      </div>
                     </div>
                   </div>
                   <div className="modal-form-grid" style={{ gap: 10, marginBottom: 10 }}>
@@ -1533,6 +1615,7 @@ function HomesSection() {
           <PopupModal isOpen={modalOpen} onClose={() => setModalOpen(false)} defaultInterest={modalInterest} />
 
           <Nav />
+          <NatureSoundControl />
           <Hero tweaks={tweaks} />
           <StatsBar />
           <Manifesto />

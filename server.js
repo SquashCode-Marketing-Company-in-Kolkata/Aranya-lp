@@ -45,6 +45,7 @@ const MIME_TYPES = {
   '.jpeg': 'image/jpeg',
   '.svg': 'image/svg+xml',
   '.pdf': 'application/pdf',
+  '.mp3': 'audio/mpeg',
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
