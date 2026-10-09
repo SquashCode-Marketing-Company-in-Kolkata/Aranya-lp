@@ -106,14 +106,60 @@ import { submitLead } from './submitLead';
       );
     }
 
-    // The supplied Kerala nature recording is kept gentle and can be muted at
-    // any time. Browsers that block audible autoplay will begin playback on
-    // the visitor's first interaction instead.
-    function NatureSoundControl() {
+    // Start playback directly in the entry button's click handler so it is
+    // covered by the visitor's gesture, including on mobile browsers.
+    function WelcomeFlower({ className }) {
+      return (
+        <svg className={className} viewBox="0 0 240 240" fill="none" aria-hidden="true">
+          <g stroke="currentColor" strokeWidth="0.8">
+            {Array.from({ length: 8 }, (_, i) => (
+              <g key={i} transform={`rotate(${i * 45} 120 120)`}>
+                <path d="M120 116C82 86 78 43 120 15C162 43 158 86 120 116Z" />
+                <path d="M120 111C101 76 110 45 120 28C130 45 139 76 120 111Z" opacity="0.45" />
+              </g>
+            ))}
+            <circle cx="120" cy="120" r="10" />
+            <circle cx="120" cy="120" r="17" opacity="0.6" />
+          </g>
+        </svg>
+      );
+    }
+
+    const WELCOME_CSS = `
+      .welcome-screen { isolation: isolate; }
+      .welcome-content { animation: welcome-rise 1.1s ease both; }
+      .welcome-logo { width: clamp(150px, 32vw, 210px); height: 90px; object-fit: contain; margin-bottom: 30px; filter: brightness(0) saturate(100%) invert(72%) sepia(42%) saturate(480%) hue-rotate(2deg) brightness(98%) contrast(90%); }
+      .welcome-flower { position: absolute; width: clamp(180px, 35vw, 440px); color: #c9a96e; opacity: .23; animation: welcome-bloom 2s ease both, welcome-turn 65s 2s linear infinite; }
+      .welcome-flower--left { left: -8%; bottom: -10%; }
+      .welcome-flower--right { right: -9%; top: -12%; animation-delay: .25s, 2.25s; }
+      .welcome-petal { position: absolute; bottom: -45px; width: 12px; height: 26px; border-radius: 90% 0 90% 0; background: linear-gradient(135deg, rgba(201,169,110,.32), rgba(201,169,110,.04)); animation: welcome-drift var(--duration) var(--delay) linear infinite; }
+      .welcome-progress { position: relative; height: 3px; background: rgba(201,169,110,.16); border-radius: 4px; overflow: hidden; }
+      .welcome-progress-fill { position: relative; height: 100%; background: #c9a96e; border-radius: inherit; transition: width .3s ease; box-shadow: 0 0 14px rgba(201,169,110,.6); overflow: hidden; }
+      .welcome-progress-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, #f5e3b6, transparent); animation: welcome-shimmer 1.4s ease-in-out infinite; }
+      .welcome-enter { transition: background .25s, transform .25s, opacity .25s; }
+      .welcome-enter:disabled { opacity: .45; }
+      .welcome-enter:not(:disabled):hover { background: #dfc28e !important; transform: translateY(-2px); }
+      .welcome-enter:focus-visible { outline: 2px solid #f5f0e8; outline-offset: 6px; }
+      @keyframes welcome-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes welcome-bloom { from { opacity: 0; scale: .7; } to { opacity: .23; scale: 1; } }
+      @keyframes welcome-turn { to { transform: rotate(360deg); } }
+      @keyframes welcome-drift { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 15% { opacity: .65; } 85% { opacity: .45; } 100% { transform: translate(90px, -110vh) rotate(210deg); opacity: 0; } }
+      @keyframes welcome-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+      @media (max-height: 650px) { .welcome-logo { height: 64px; margin-bottom: 16px; } .welcome-content { padding: 16px 0 !important; } }
+      @media (prefers-reduced-motion: reduce) { .welcome-content, .welcome-flower, .welcome-petal, .welcome-progress-fill::after { animation: none; } .welcome-petal { display: none; } .welcome-progress-fill, .welcome-enter { transition: none; } }
+    `;
+
+    function NatureSoundControl({ entered, onEnter }) {
       const [playing, setPlaying] = useState(false);
+      const [ready, setReady] = useState(false);
+      const [progress, setProgress] = useState(0);
+      const [secondsToEnter, setSecondsToEnter] = useState(5);
       const audioRef = useRef(null);
+      const enterButtonRef = useRef(null);
+      const soundEnabledRef = useRef(true);
 
       const stopSoundscape = useCallback(() => {
+        soundEnabledRef.current = false;
         const audio = audioRef.current;
         if (!audio) return;
         audio.pause();
@@ -121,37 +167,91 @@ import { submitLead } from './submitLead';
       }, []);
 
       const startSoundscape = useCallback(() => {
+        soundEnabledRef.current = true;
         const audio = audioRef.current;
         if (!audio) return Promise.resolve();
+        audio.muted = false;
+        audio.volume = 0.18;
         return audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
       }, []);
 
       useEffect(() => {
+        const startedAt = Date.now();
+        let completionTimer;
+        let finishing = false;
+        const progressTimer = window.setInterval(() => {
+          setProgress(value => Math.min(90, value + Math.max(1, (90 - value) * 0.09)));
+        }, 80);
+        const finish = () => {
+          if (finishing) return;
+          finishing = true;
+          completionTimer = window.setTimeout(() => {
+            window.clearInterval(progressTimer);
+            setProgress(100);
+            setReady(true);
+          }, Math.max(0, 1800 - (Date.now() - startedAt)));
+        };
+        // Wait for the page's initial assets, with a short minimum duration for
+        // the animation and a fallback so a slow external asset cannot trap entry.
+        if (document.readyState === 'complete') finish();
+        else window.addEventListener('load', finish, { once: true });
+        const fallbackTimer = window.setTimeout(finish, 6000);
         const audio = audioRef.current;
-        if (!audio) return undefined;
-        audio.volume = 0.18;
-        startSoundscape();
-        // Keep trying after a real gesture if the browser initially blocks
-        // audible autoplay. The listeners are removed as soon as it plays.
-        const unlockAudio = () => {
-          startSoundscape().then(() => {
-            if (!audio.paused) {
-              window.removeEventListener('pointerdown', unlockAudio);
-              window.removeEventListener('keydown', unlockAudio);
-              window.removeEventListener('touchstart', unlockAudio);
-            }
-          });
-        };
-        window.addEventListener('pointerdown', unlockAudio, { passive: true });
-        window.addEventListener('keydown', unlockAudio);
-        window.addEventListener('touchstart', unlockAudio, { passive: true });
         return () => {
-          window.removeEventListener('pointerdown', unlockAudio);
-          window.removeEventListener('keydown', unlockAudio);
-          window.removeEventListener('touchstart', unlockAudio);
-          audio.pause();
+          window.clearInterval(progressTimer);
+          window.clearTimeout(completionTimer);
+          window.clearTimeout(fallbackTimer);
+          window.removeEventListener('load', finish);
+          audio?.pause();
         };
-      }, [startSoundscape]);
+      }, []);
+
+      useEffect(() => {
+        if (entered) return undefined;
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        if (ready) enterButtonRef.current?.focus();
+        return () => { document.body.style.overflow = previousOverflow; };
+      }, [entered, ready]);
+
+      useEffect(() => {
+        if (!ready || entered) return undefined;
+        const countdownTimer = window.setInterval(() => {
+          setSecondsToEnter(value => Math.max(0, value - 1));
+        }, 1000);
+        const entryTimer = window.setTimeout(() => {
+          startSoundscape();
+          onEnter();
+        }, 5000);
+        return () => {
+          window.clearInterval(countdownTimer);
+          window.clearTimeout(entryTimer);
+        };
+      }, [ready, entered, onEnter, startSoundscape]);
+
+      useEffect(() => {
+        if (!entered) return undefined;
+        const unlockAudio = event => {
+          if (!soundEnabledRef.current || !audioRef.current?.paused) return;
+          if (event.target instanceof Element && event.target.closest('[data-nature-sound-control]')) return;
+          startSoundscape();
+        };
+        // After automatic entry, a regular interaction can unlock sound if
+        // audible autoplay was blocked. An explicit mute remains respected.
+        window.addEventListener('click', unlockAudio);
+        window.addEventListener('keydown', unlockAudio);
+        return () => {
+          window.removeEventListener('click', unlockAudio);
+          window.removeEventListener('keydown', unlockAudio);
+        };
+      }, [entered, startSoundscape]);
+
+      const enter = () => {
+        // Do not await loading or animation before play(): the browser's
+        // permission comes from this click. Keep entry usable if audio fails.
+        startSoundscape();
+        onEnter();
+      };
 
       const toggle = () => {
         if (playing) {
@@ -164,14 +264,38 @@ import { submitLead } from './submitLead';
         <audio
           ref={audioRef}
           src="/uploads/Feel%20the%20sound%20of%20nature%20in%20kerala%20%23nature%20%23peaceful%20%23travel%20%23monsoon.mp3"
-          autoPlay
           loop
           preload="auto"
           onPlay={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
         />
-        <button
+        {!entered && (
+          <div className="welcome-screen" role="dialog" aria-modal="true" aria-labelledby="welcome-title" aria-describedby="welcome-copy" style={{ position: 'fixed', inset: 0, zIndex: 10000, display: 'grid', placeItems: 'center', padding: 24, overflowY: 'auto', background: 'radial-gradient(ellipse at 50% 80%, #263e28 0%, #101f13 55%, #08120b 100%)', color: '#f5f0e8' }}>
+            <style>{WELCOME_CSS}</style>
+            <div aria-hidden="true" style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+              <WelcomeFlower className="welcome-flower welcome-flower--left" />
+              <WelcomeFlower className="welcome-flower welcome-flower--right" />
+              {Array.from({ length: 8 }, (_, i) => <span key={i} className="welcome-petal" style={{ left: `${8 + i * 12}%`, '--duration': `${12 + i % 4 * 3}s`, '--delay': `${-i * 2.4}s` }} />)}
+            </div>
+            <div className="welcome-content" style={{ position: 'relative', textAlign: 'center', width: '100%', maxWidth: 540, padding: '40px 0' }}>
+              <img className="welcome-logo" src="/uploads/asset%201%403x.webp" alt="Aranya by Rang Homes" fetchPriority="high" />
+              <h1 id="welcome-title" style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(42px, 8vw, 72px)', fontWeight: 400, lineHeight: 1.08, margin: '0 0 22px' }}>A quieter world<br /><em style={{ color: '#c9a96e' }}>awaits.</em></h1>
+              <p id="welcome-copy" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 13, fontWeight: 300, lineHeight: 1.8, color: 'rgba(245,240,232,0.7)', margin: '0 0 32px' }}>Step inside, accompanied by the gentle sounds of nature.</p>
+              <div style={{ maxWidth: 260, margin: '0 auto 28px' }}>
+                <div className="welcome-progress" role="progressbar" aria-label="Preparing your experience" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)} aria-valuetext={ready ? 'Ready to enter' : 'Loading your experience'}>
+                  <div className="welcome-progress-fill" style={{ width: `${progress}%` }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 11, fontFamily: 'DM Sans, sans-serif', fontSize: 9, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(245,240,232,0.5)' }}><span>{ready ? 'Your sanctuary awaits' : 'Preparing your sanctuary'}</span><span>{Math.round(progress)}%</span></div>
+              </div>
+              <button className="welcome-enter" ref={enterButtonRef} type="button" disabled={!ready} onClick={enter} style={{ padding: '16px 24px', border: '1px solid #c9a96e', borderRadius: 999, background: '#c9a96e', color: '#102015', cursor: ready ? 'pointer' : 'wait', fontFamily: 'DM Sans, sans-serif', fontSize: 11, fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' }}>{ready ? 'Enter with nature sounds' : 'Preparing your experience…'}</button>
+              <p aria-live="polite" style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'rgba(245,240,232,0.45)', marginTop: 18 }}>{ready ? 'Take a moment to unwind.' : 'Loading your experience…'}</p>
+              {ready && <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: 10, color: 'rgba(245,240,232,0.6)', marginTop: 10 }}>Opening automatically in {secondsToEnter}s</p>}
+            </div>
+          </div>
+        )}
+        {entered && <button
           type="button"
+          data-nature-sound-control="true"
           onClick={toggle}
           aria-pressed={playing}
           aria-label={playing ? 'Turn off nature sounds' : 'Turn on nature sounds'}
@@ -180,7 +304,7 @@ import { submitLead } from './submitLead';
         >
           <span aria-hidden="true" style={{ fontSize: 15, lineHeight: 1 }}>{playing ? '♪' : '♬'}</span>
           <span>{playing ? 'Nature sounds on' : 'Nature sounds'}</span>
-        </button>
+        </button>}
         </>
       );
     }
@@ -1595,8 +1719,15 @@ function HomesSection() {
     // ─── APP ──────────────────────────────────────────────────────────────────────
     function App() {
       const { tweaks, setTweak } = useTweaks(TWEAK_DEFAULTS);
+      const [entered, setEntered] = useState(false);
+      const enterExperience = useCallback(() => setEntered(true), []);
+      const experienceRef = useRef(null);
       const [modalOpen, setModalOpen] = useState(false);
       const [modalInterest, setModalInterest] = useState('');
+
+      useEffect(() => {
+        if (entered) experienceRef.current?.focus({ preventScroll: true });
+      }, [entered]);
 
       const openModal = useCallback((interest = '') => {
         setModalInterest(interest || '');
@@ -1605,6 +1736,8 @@ function HomesSection() {
 
       return (
         <ModalCtx.Provider value={openModal}>
+          <NatureSoundControl entered={entered} onEnter={enterExperience} />
+          <div ref={experienceRef} tabIndex={-1} inert={!entered} aria-hidden={!entered} style={{ visibility: entered ? 'visible' : 'hidden', outline: 'none' }}>
           <TweaksPanel title="Aranya Tweaks">
             <TweakSection label="Hero" />
             <TweakSlider label="Overlay Darkness" tweakKey="heroOverlay" min={0} max={60} step={5} tweaks={tweaks} setTweak={setTweak} />
@@ -1615,7 +1748,6 @@ function HomesSection() {
           <PopupModal isOpen={modalOpen} onClose={() => setModalOpen(false)} defaultInterest={modalInterest} />
 
           <Nav />
-          <NatureSoundControl />
           <Hero tweaks={tweaks} />
           <StatsBar />
           <Manifesto />
@@ -1629,6 +1761,7 @@ function HomesSection() {
           <DeveloperSection />
           <FAQSection />
                     <Footer />
+          </div>
         </ModalCtx.Provider>
       );
     }

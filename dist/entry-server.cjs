@@ -12255,44 +12255,124 @@ function useParallax(speed = 0.15) {
 function GoldDivider({ style }) {
   return /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, ...style } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { height: 1, flex: 1, background: "linear-gradient(to right, transparent, #c9a96e)" } }), /* @__PURE__ */ import_react.default.createElement("div", { style: { width: 5, height: 5, borderRadius: "50%", background: "#c9a96e", flexShrink: 0 } }), /* @__PURE__ */ import_react.default.createElement("div", { style: { height: 1, flex: 1, background: "linear-gradient(to left, transparent, #c9a96e)" } }));
 }
-function NatureSoundControl() {
+function WelcomeFlower({ className }) {
+  return /* @__PURE__ */ import_react.default.createElement("svg", { className, viewBox: "0 0 240 240", fill: "none", "aria-hidden": "true" }, /* @__PURE__ */ import_react.default.createElement("g", { stroke: "currentColor", strokeWidth: "0.8" }, Array.from({ length: 8 }, (_, i) => /* @__PURE__ */ import_react.default.createElement("g", { key: i, transform: `rotate(${i * 45} 120 120)` }, /* @__PURE__ */ import_react.default.createElement("path", { d: "M120 116C82 86 78 43 120 15C162 43 158 86 120 116Z" }), /* @__PURE__ */ import_react.default.createElement("path", { d: "M120 111C101 76 110 45 120 28C130 45 139 76 120 111Z", opacity: "0.45" }))), /* @__PURE__ */ import_react.default.createElement("circle", { cx: "120", cy: "120", r: "10" }), /* @__PURE__ */ import_react.default.createElement("circle", { cx: "120", cy: "120", r: "17", opacity: "0.6" })));
+}
+var WELCOME_CSS = `
+      .welcome-screen { isolation: isolate; }
+      .welcome-content { animation: welcome-rise 1.1s ease both; }
+      .welcome-logo { width: clamp(150px, 32vw, 210px); height: 90px; object-fit: contain; margin-bottom: 30px; filter: brightness(0) saturate(100%) invert(72%) sepia(42%) saturate(480%) hue-rotate(2deg) brightness(98%) contrast(90%); }
+      .welcome-flower { position: absolute; width: clamp(180px, 35vw, 440px); color: #c9a96e; opacity: .23; animation: welcome-bloom 2s ease both, welcome-turn 65s 2s linear infinite; }
+      .welcome-flower--left { left: -8%; bottom: -10%; }
+      .welcome-flower--right { right: -9%; top: -12%; animation-delay: .25s, 2.25s; }
+      .welcome-petal { position: absolute; bottom: -45px; width: 12px; height: 26px; border-radius: 90% 0 90% 0; background: linear-gradient(135deg, rgba(201,169,110,.32), rgba(201,169,110,.04)); animation: welcome-drift var(--duration) var(--delay) linear infinite; }
+      .welcome-progress { position: relative; height: 3px; background: rgba(201,169,110,.16); border-radius: 4px; overflow: hidden; }
+      .welcome-progress-fill { position: relative; height: 100%; background: #c9a96e; border-radius: inherit; transition: width .3s ease; box-shadow: 0 0 14px rgba(201,169,110,.6); overflow: hidden; }
+      .welcome-progress-fill::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, #f5e3b6, transparent); animation: welcome-shimmer 1.4s ease-in-out infinite; }
+      .welcome-enter { transition: background .25s, transform .25s, opacity .25s; }
+      .welcome-enter:disabled { opacity: .45; }
+      .welcome-enter:not(:disabled):hover { background: #dfc28e !important; transform: translateY(-2px); }
+      .welcome-enter:focus-visible { outline: 2px solid #f5f0e8; outline-offset: 6px; }
+      @keyframes welcome-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes welcome-bloom { from { opacity: 0; scale: .7; } to { opacity: .23; scale: 1; } }
+      @keyframes welcome-turn { to { transform: rotate(360deg); } }
+      @keyframes welcome-drift { 0% { transform: translate(0, 0) rotate(0); opacity: 0; } 15% { opacity: .65; } 85% { opacity: .45; } 100% { transform: translate(90px, -110vh) rotate(210deg); opacity: 0; } }
+      @keyframes welcome-shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+      @media (max-height: 650px) { .welcome-logo { height: 64px; margin-bottom: 16px; } .welcome-content { padding: 16px 0 !important; } }
+      @media (prefers-reduced-motion: reduce) { .welcome-content, .welcome-flower, .welcome-petal, .welcome-progress-fill::after { animation: none; } .welcome-petal { display: none; } .welcome-progress-fill, .welcome-enter { transition: none; } }
+    `;
+function NatureSoundControl({ entered, onEnter }) {
   const [playing, setPlaying] = (0, import_react.useState)(false);
+  const [ready, setReady] = (0, import_react.useState)(false);
+  const [progress, setProgress] = (0, import_react.useState)(0);
+  const [secondsToEnter, setSecondsToEnter] = (0, import_react.useState)(5);
   const audioRef = (0, import_react.useRef)(null);
+  const enterButtonRef = (0, import_react.useRef)(null);
+  const soundEnabledRef = (0, import_react.useRef)(true);
   const stopSoundscape = (0, import_react.useCallback)(() => {
+    soundEnabledRef.current = false;
     const audio = audioRef.current;
     if (!audio) return;
     audio.pause();
     setPlaying(false);
   }, []);
   const startSoundscape = (0, import_react.useCallback)(() => {
+    soundEnabledRef.current = true;
     const audio = audioRef.current;
     if (!audio) return Promise.resolve();
+    audio.muted = false;
+    audio.volume = 0.18;
     return audio.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
   }, []);
   (0, import_react.useEffect)(() => {
+    const startedAt = Date.now();
+    let completionTimer;
+    let finishing = false;
+    const progressTimer = window.setInterval(() => {
+      setProgress((value) => Math.min(90, value + Math.max(1, (90 - value) * 0.09)));
+    }, 80);
+    const finish = () => {
+      if (finishing) return;
+      finishing = true;
+      completionTimer = window.setTimeout(() => {
+        window.clearInterval(progressTimer);
+        setProgress(100);
+        setReady(true);
+      }, Math.max(0, 1800 - (Date.now() - startedAt)));
+    };
+    if (document.readyState === "complete") finish();
+    else window.addEventListener("load", finish, { once: true });
+    const fallbackTimer = window.setTimeout(finish, 6e3);
     const audio = audioRef.current;
-    if (!audio) return void 0;
-    audio.volume = 0.18;
-    startSoundscape();
-    const unlockAudio = () => {
-      startSoundscape().then(() => {
-        if (!audio.paused) {
-          window.removeEventListener("pointerdown", unlockAudio);
-          window.removeEventListener("keydown", unlockAudio);
-          window.removeEventListener("touchstart", unlockAudio);
-        }
-      });
-    };
-    window.addEventListener("pointerdown", unlockAudio, { passive: true });
-    window.addEventListener("keydown", unlockAudio);
-    window.addEventListener("touchstart", unlockAudio, { passive: true });
     return () => {
-      window.removeEventListener("pointerdown", unlockAudio);
-      window.removeEventListener("keydown", unlockAudio);
-      window.removeEventListener("touchstart", unlockAudio);
-      audio.pause();
+      window.clearInterval(progressTimer);
+      window.clearTimeout(completionTimer);
+      window.clearTimeout(fallbackTimer);
+      window.removeEventListener("load", finish);
+      audio?.pause();
     };
-  }, [startSoundscape]);
+  }, []);
+  (0, import_react.useEffect)(() => {
+    if (entered) return void 0;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    if (ready) enterButtonRef.current?.focus();
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [entered, ready]);
+  (0, import_react.useEffect)(() => {
+    if (!ready || entered) return void 0;
+    const countdownTimer = window.setInterval(() => {
+      setSecondsToEnter((value) => Math.max(0, value - 1));
+    }, 1e3);
+    const entryTimer = window.setTimeout(() => {
+      startSoundscape();
+      onEnter();
+    }, 5e3);
+    return () => {
+      window.clearInterval(countdownTimer);
+      window.clearTimeout(entryTimer);
+    };
+  }, [ready, entered, onEnter, startSoundscape]);
+  (0, import_react.useEffect)(() => {
+    if (!entered) return void 0;
+    const unlockAudio = (event) => {
+      if (!soundEnabledRef.current || !audioRef.current?.paused) return;
+      if (event.target instanceof Element && event.target.closest("[data-nature-sound-control]")) return;
+      startSoundscape();
+    };
+    window.addEventListener("click", unlockAudio);
+    window.addEventListener("keydown", unlockAudio);
+    return () => {
+      window.removeEventListener("click", unlockAudio);
+      window.removeEventListener("keydown", unlockAudio);
+    };
+  }, [entered, startSoundscape]);
+  const enter = () => {
+    startSoundscape();
+    onEnter();
+  };
   const toggle = () => {
     if (playing) {
       stopSoundscape();
@@ -12303,16 +12383,16 @@ function NatureSoundControl() {
     {
       ref: audioRef,
       src: "/uploads/Feel%20the%20sound%20of%20nature%20in%20kerala%20%23nature%20%23peaceful%20%23travel%20%23monsoon.mp3",
-      autoPlay: true,
       loop: true,
       preload: "auto",
       onPlay: () => setPlaying(true),
       onPause: () => setPlaying(false)
     }
-  ), /* @__PURE__ */ import_react.default.createElement(
+  ), !entered && /* @__PURE__ */ import_react.default.createElement("div", { className: "welcome-screen", role: "dialog", "aria-modal": "true", "aria-labelledby": "welcome-title", "aria-describedby": "welcome-copy", style: { position: "fixed", inset: 0, zIndex: 1e4, display: "grid", placeItems: "center", padding: 24, overflowY: "auto", background: "radial-gradient(ellipse at 50% 80%, #263e28 0%, #101f13 55%, #08120b 100%)", color: "#f5f0e8" } }, /* @__PURE__ */ import_react.default.createElement("style", null, WELCOME_CSS), /* @__PURE__ */ import_react.default.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" } }, /* @__PURE__ */ import_react.default.createElement(WelcomeFlower, { className: "welcome-flower welcome-flower--left" }), /* @__PURE__ */ import_react.default.createElement(WelcomeFlower, { className: "welcome-flower welcome-flower--right" }), Array.from({ length: 8 }, (_, i) => /* @__PURE__ */ import_react.default.createElement("span", { key: i, className: "welcome-petal", style: { left: `${8 + i * 12}%`, "--duration": `${12 + i % 4 * 3}s`, "--delay": `${-i * 2.4}s` } }))), /* @__PURE__ */ import_react.default.createElement("div", { className: "welcome-content", style: { position: "relative", textAlign: "center", width: "100%", maxWidth: 540, padding: "40px 0" } }, /* @__PURE__ */ import_react.default.createElement("img", { className: "welcome-logo", src: "/uploads/asset%201%403x.webp", alt: "Aranya by Rang Homes", fetchPriority: "high" }), /* @__PURE__ */ import_react.default.createElement("h1", { id: "welcome-title", style: { fontFamily: "Cormorant Garamond, serif", fontSize: "clamp(42px, 8vw, 72px)", fontWeight: 400, lineHeight: 1.08, margin: "0 0 22px" } }, "A quieter world", /* @__PURE__ */ import_react.default.createElement("br", null), /* @__PURE__ */ import_react.default.createElement("em", { style: { color: "#c9a96e" } }, "awaits.")), /* @__PURE__ */ import_react.default.createElement("p", { id: "welcome-copy", style: { fontFamily: "DM Sans, sans-serif", fontSize: 13, fontWeight: 300, lineHeight: 1.8, color: "rgba(245,240,232,0.7)", margin: "0 0 32px" } }, "Step inside, accompanied by the gentle sounds of nature."), /* @__PURE__ */ import_react.default.createElement("div", { style: { maxWidth: 260, margin: "0 auto 28px" } }, /* @__PURE__ */ import_react.default.createElement("div", { className: "welcome-progress", role: "progressbar", "aria-label": "Preparing your experience", "aria-valuemin": 0, "aria-valuemax": 100, "aria-valuenow": Math.round(progress), "aria-valuetext": ready ? "Ready to enter" : "Loading your experience" }, /* @__PURE__ */ import_react.default.createElement("div", { className: "welcome-progress-fill", style: { width: `${progress}%` } })), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginTop: 11, fontFamily: "DM Sans, sans-serif", fontSize: 9, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(245,240,232,0.5)" } }, /* @__PURE__ */ import_react.default.createElement("span", null, ready ? "Your sanctuary awaits" : "Preparing your sanctuary"), /* @__PURE__ */ import_react.default.createElement("span", null, Math.round(progress), "%"))), /* @__PURE__ */ import_react.default.createElement("button", { className: "welcome-enter", ref: enterButtonRef, type: "button", disabled: !ready, onClick: enter, style: { padding: "16px 24px", border: "1px solid #c9a96e", borderRadius: 999, background: "#c9a96e", color: "#102015", cursor: ready ? "pointer" : "wait", fontFamily: "DM Sans, sans-serif", fontSize: 11, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase" } }, ready ? "Enter with nature sounds" : "Preparing your experience\u2026"), /* @__PURE__ */ import_react.default.createElement("p", { "aria-live": "polite", style: { fontFamily: "DM Sans, sans-serif", fontSize: 10, color: "rgba(245,240,232,0.45)", marginTop: 18 } }, ready ? "Take a moment to unwind." : "Loading your experience\u2026"), ready && /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans, sans-serif", fontSize: 10, color: "rgba(245,240,232,0.6)", marginTop: 10 } }, "Opening automatically in ", secondsToEnter, "s"))), entered && /* @__PURE__ */ import_react.default.createElement(
     "button",
     {
       type: "button",
+      "data-nature-sound-control": "true",
       onClick: toggle,
       "aria-pressed": playing,
       "aria-label": playing ? "Turn off nature sounds" : "Turn on nature sounds",
@@ -13197,13 +13277,19 @@ function Footer() {
 }
 function App() {
   const { tweaks, setTweak } = useTweaks(TWEAK_DEFAULTS);
+  const [entered, setEntered] = (0, import_react.useState)(false);
+  const enterExperience = (0, import_react.useCallback)(() => setEntered(true), []);
+  const experienceRef = (0, import_react.useRef)(null);
   const [modalOpen, setModalOpen] = (0, import_react.useState)(false);
   const [modalInterest, setModalInterest] = (0, import_react.useState)("");
+  (0, import_react.useEffect)(() => {
+    if (entered) experienceRef.current?.focus({ preventScroll: true });
+  }, [entered]);
   const openModal = (0, import_react.useCallback)((interest = "") => {
     setModalInterest(interest || "");
     setModalOpen(true);
   }, []);
-  return /* @__PURE__ */ import_react.default.createElement(ModalCtx.Provider, { value: openModal }, /* @__PURE__ */ import_react.default.createElement(TweaksPanel, { title: "Aranya Tweaks" }, /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Hero" }), /* @__PURE__ */ import_react.default.createElement(TweakSlider, { label: "Overlay Darkness", tweakKey: "heroOverlay", min: 0, max: 60, step: 5, tweaks, setTweak }), /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Brand" }), /* @__PURE__ */ import_react.default.createElement(TweakColor, { label: "Accent (Gold)", tweakKey: "accentColor", tweaks, setTweak })), /* @__PURE__ */ import_react.default.createElement(PopupModal, { isOpen: modalOpen, onClose: () => setModalOpen(false), defaultInterest: modalInterest }), /* @__PURE__ */ import_react.default.createElement(Nav, null), /* @__PURE__ */ import_react.default.createElement(NatureSoundControl, null), /* @__PURE__ */ import_react.default.createElement(Hero, { tweaks }), /* @__PURE__ */ import_react.default.createElement(StatsBar, null), /* @__PURE__ */ import_react.default.createElement(Manifesto, null), /* @__PURE__ */ import_react.default.createElement(SustainableAtmos, null), /* @__PURE__ */ import_react.default.createElement(WellnessSection, null), /* @__PURE__ */ import_react.default.createElement(ClubAranya, null), /* @__PURE__ */ import_react.default.createElement(HomesSection, null), /* @__PURE__ */ import_react.default.createElement(WalkthroughVideo, null), /* @__PURE__ */ import_react.default.createElement(GallerySection, null), /* @__PURE__ */ import_react.default.createElement(LocationSection, null), /* @__PURE__ */ import_react.default.createElement(DeveloperSection, null), /* @__PURE__ */ import_react.default.createElement(FAQSection, null), /* @__PURE__ */ import_react.default.createElement(Footer, null));
+  return /* @__PURE__ */ import_react.default.createElement(ModalCtx.Provider, { value: openModal }, /* @__PURE__ */ import_react.default.createElement(NatureSoundControl, { entered, onEnter: enterExperience }), /* @__PURE__ */ import_react.default.createElement("div", { ref: experienceRef, tabIndex: -1, inert: !entered, "aria-hidden": !entered, style: { visibility: entered ? "visible" : "hidden", outline: "none" } }, /* @__PURE__ */ import_react.default.createElement(TweaksPanel, { title: "Aranya Tweaks" }, /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Hero" }), /* @__PURE__ */ import_react.default.createElement(TweakSlider, { label: "Overlay Darkness", tweakKey: "heroOverlay", min: 0, max: 60, step: 5, tweaks, setTweak }), /* @__PURE__ */ import_react.default.createElement(TweakSection, { label: "Brand" }), /* @__PURE__ */ import_react.default.createElement(TweakColor, { label: "Accent (Gold)", tweakKey: "accentColor", tweaks, setTweak })), /* @__PURE__ */ import_react.default.createElement(PopupModal, { isOpen: modalOpen, onClose: () => setModalOpen(false), defaultInterest: modalInterest }), /* @__PURE__ */ import_react.default.createElement(Nav, null), /* @__PURE__ */ import_react.default.createElement(Hero, { tweaks }), /* @__PURE__ */ import_react.default.createElement(StatsBar, null), /* @__PURE__ */ import_react.default.createElement(Manifesto, null), /* @__PURE__ */ import_react.default.createElement(SustainableAtmos, null), /* @__PURE__ */ import_react.default.createElement(WellnessSection, null), /* @__PURE__ */ import_react.default.createElement(ClubAranya, null), /* @__PURE__ */ import_react.default.createElement(HomesSection, null), /* @__PURE__ */ import_react.default.createElement(WalkthroughVideo, null), /* @__PURE__ */ import_react.default.createElement(GallerySection, null), /* @__PURE__ */ import_react.default.createElement(LocationSection, null), /* @__PURE__ */ import_react.default.createElement(DeveloperSection, null), /* @__PURE__ */ import_react.default.createElement(FAQSection, null), /* @__PURE__ */ import_react.default.createElement(Footer, null)));
 }
 var App_default = App;
 
