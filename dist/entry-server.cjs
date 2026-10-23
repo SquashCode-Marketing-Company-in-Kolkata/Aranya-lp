@@ -12382,7 +12382,7 @@ function NatureSoundControl({ entered, onEnter }) {
     "audio",
     {
       ref: audioRef,
-      src: "/uploads/Feel%20the%20sound%20of%20nature%20in%20kerala%20%23nature%20%23peaceful%20%23travel%20%23monsoon.mp3",
+      src: "/uploads/soundreality-birds-forest-nature-445379.mp3",
       loop: true,
       preload: "auto",
       onPlay: () => setPlaying(true),
