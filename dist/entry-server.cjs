@@ -481,7 +481,7 @@ var require_react_production = __commonJS({
     exports2.useTransition = function() {
       return ReactSharedInternals.H.useTransition();
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -650,7 +650,7 @@ var require_react_dom_production = __commonJS({
     exports2.useFormStatus = function() {
       return ReactSharedInternals.H.useHostTransitionStatus();
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -5927,7 +5927,7 @@ A.finished.finally(function(){document.__reactViewTransition===A&&(document.__re
         'The server used "renderToString" which does not support Suspense. If you intended for this Suspense boundary to render the fallback content on the server consider throwing an Error somewhere within the Suspense boundary. If you intended to have the server wait for the suspended component please switch to "renderToPipeableStream" which supports Suspense on the server'
       );
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -5967,6 +5967,11 @@ var require_react_dom_server_node_production = __commonJS({
     }
     var REACT_OPTIMISTIC_KEY = /* @__PURE__ */ Symbol.for("react.optimistic_key");
     var isArrayImpl = Array.isArray;
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    var supportsArrayBufferDetached = hasOwnProperty.call(
+      ArrayBuffer.prototype,
+      "detached"
+    );
     var scheduleMicrotask = queueMicrotask;
     function flushBuffered(destination) {
       "function" === typeof destination.flush && destination.flush();
@@ -5997,11 +6002,16 @@ var require_react_dom_server_node_production = __commonJS({
             ).written);
             4096 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(4096), writtenBytes = 0);
           }
+      } else if (0 === chunk.byteLength) {
+        if (supportsArrayBufferDetached && chunk.buffer.detached)
+          throw Error(
+            "Cannot transport a detached buffer. This usually happens when trying to transport multiple buffer-spanning views on the same underyling buffer. Either reuse the exact same view by identity or copy the underlying buffer manually via `view.slice()`."
+          );
       } else
-        0 !== chunk.byteLength && (4096 < chunk.byteLength ? (0 < writtenBytes && (writeToDestination(
+        4096 < chunk.byteLength ? (0 < writtenBytes && (writeToDestination(
           destination,
           currentView.subarray(0, writtenBytes)
-        ), currentView = new Uint8Array(4096), writtenBytes = 0), writeToDestination(destination, chunk)) : (target = currentView.length - writtenBytes, target < chunk.byteLength && (0 === target ? writeToDestination(destination, currentView) : (currentView.set(chunk.subarray(0, target), writtenBytes), writtenBytes += target, writeToDestination(destination, currentView), chunk = chunk.subarray(target)), currentView = new Uint8Array(4096), writtenBytes = 0), currentView.set(chunk, writtenBytes), writtenBytes += chunk.byteLength, 4096 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(4096), writtenBytes = 0)));
+        ), currentView = new Uint8Array(4096), writtenBytes = 0), writeToDestination(destination, chunk)) : (target = currentView.length - writtenBytes, target < chunk.byteLength && (0 === target ? writeToDestination(destination, currentView) : (currentView.set(chunk.subarray(0, target), writtenBytes), writtenBytes += target, writeToDestination(destination, currentView), chunk = chunk.subarray(target)), currentView = new Uint8Array(4096), writtenBytes = 0), currentView.set(chunk, writtenBytes), writtenBytes += chunk.byteLength, 4096 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(4096), writtenBytes = 0));
     }
     function writeToDestination(destination, view) {
       destination = destination.write(view);
@@ -6025,7 +6035,6 @@ var require_react_dom_server_node_production = __commonJS({
       return "string" === typeof chunk ? Buffer.byteLength(chunk, "utf8") : chunk.byteLength;
     }
     var assign = Object.assign;
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
     var VALID_ATTRIBUTE_NAME_REGEX = RegExp(
       "^[:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD][:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$"
     );
@@ -11627,9 +11636,9 @@ A.finished.finally(function(){document.__reactViewTransition===A&&(document.__re
     }
     function ensureCorrectIsomorphicReactVersion() {
       var isomorphicReactPackageVersion = React3.version;
-      if ("19.3.0" !== isomorphicReactPackageVersion)
+      if ("19.3.1" !== isomorphicReactPackageVersion)
         throw Error(
-          'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.3.0\nLearn more: https://react.dev/warnings/version-mismatch")
+          'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.3.1\nLearn more: https://react.dev/warnings/version-mismatch")
         );
     }
     ensureCorrectIsomorphicReactVersion();
@@ -12092,7 +12101,7 @@ A.finished.finally(function(){document.__reactViewTransition===A&&(document.__re
         }
       };
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -12660,7 +12669,7 @@ function ClubAranya() {
     { name: "GAMEON@ARANYA", tag: "Ground Level", desc: "Billiards, table tennis, arcade machines \u2014 a space where friendly competition thrives.", img: "uploads/gaming room (00000)_6k.webp" },
     { name: "EIEIO PLAY STUDIO", tag: "Ground Level", desc: "A toddlers' world where little feet make big memories. Safe, imaginative, and delightful in every corner.", img: "uploads/kids_play (00000)_5k.webp" }
   ];
-  return /* @__PURE__ */ import_react.default.createElement("section", { id: "club", style: { background: "#243a24", padding: "clamp(72px,9vw,130px) clamp(20px,8vw,120px)", position: "relative", overflow: "hidden" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { position: "absolute", top: "-10%", left: "50%", transform: "translateX(-50%)", width: "70%", height: "55%", background: "radial-gradient(ellipse, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" } }), /* @__PURE__ */ import_react.default.createElement("div", { ref, style: { maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", marginBottom: 56, opacity: vis ? 1 : 0, transition: "opacity 0.8s ease" } }, /* @__PURE__ */ import_react.default.createElement("img", { src: "uploads/logo design.webp", alt: "Club Aranya Logo", style: { width: 80, height: 80, objectFit: "contain", marginBottom: 20, border: "1px solid rgba(201,169,110,0.3)", padding: "4px", background: "rgba(255,255,255,0.05)", boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)" } }), /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 22, fontWeight: 500, letterSpacing: "0.32em", textTransform: "uppercase", color: "#c9a96e", marginBottom: 20 } }, "Club Aranya"), /* @__PURE__ */ import_react.default.createElement("h2", { style: { fontFamily: "Cormorant Garamond, serif", fontSize: "clamp(32px,4vw,56px)", fontWeight: 300, color: "#f5f0e8", lineHeight: 1.15, marginBottom: 18 } }, "Double-tiered social spaces", /* @__PURE__ */ import_react.default.createElement("br", null), /* @__PURE__ */ import_react.default.createElement("em", { style: { color: "#c9a96e" } }, "spread over 16,000+ sq ft.")), /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 14, fontWeight: 300, color: "rgba(245,240,232,0.55)", maxWidth: 520, margin: "0 auto", lineHeight: 1.85 } }, "Social, inclusive, rooted in warmth \u2014 this is where unwinding hours feel special.")), /* @__PURE__ */ import_react.default.createElement("div", { style: { display: "flex", gap: 3, marginBottom: 3, flexWrap: "wrap", justifyContent: "center" } }, spaces.map((s, i) => /* @__PURE__ */ import_react.default.createElement("button", { key: i, onClick: () => setActive(i), style: { fontFamily: "DM Sans", fontSize: 11, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", padding: "11px 18px", border: "none", cursor: "pointer", background: active === i ? "#c9a96e" : "rgba(245,240,232,0.07)", color: active === i ? "#1a2e1a" : "rgba(245,240,232,0.55)", transition: "all 0.25s ease", flex: "0 0 auto" } }, s.name))), /* @__PURE__ */ import_react.default.createElement("div", { className: "club-grid", style: { gap: 3, opacity: vis ? 1 : 0, transition: "opacity 0.7s ease 0.25s" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { background: "rgba(245,240,232,0.04)", border: "1px solid rgba(201,169,110,0.15)", padding: "clamp(32px,4vw,56px) clamp(28px,4vw,52px)", display: "flex", flexDirection: "column", justifyContent: "center" } }, /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7a9e7e", marginBottom: 16 } }, spaces[active].tag), /* @__PURE__ */ import_react.default.createElement("h3", { style: { fontFamily: "Cormorant Garamond, serif", fontSize: "clamp(32px,3.5vw,46px)", fontWeight: 300, color: "#f5f0e8", marginBottom: 22, lineHeight: 1.15 } }, spaces[active].name), /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 14, fontWeight: 300, color: "rgba(245,240,232,0.68)", lineHeight: 1.9 } }, spaces[active].desc)), /* @__PURE__ */ import_react.default.createElement("div", { className: "img-zoom", style: { height: 380, overflow: "hidden", position: "relative" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: `url('${spaces[active].img}')`, backgroundSize: "cover", backgroundPosition: "center", transition: "background-image 0.2s" } }))), /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", marginTop: 36, opacity: vis ? 1 : 0, transition: "opacity 0.8s ease 0.5s" } }, /* @__PURE__ */ import_react.default.createElement(CTAButton, { label: "View Full Gallery", variant: "outline", onClick: () => {
+  return /* @__PURE__ */ import_react.default.createElement("section", { id: "club", style: { background: "#243a24", padding: "clamp(72px,9vw,130px) clamp(20px,8vw,120px)", position: "relative", overflow: "hidden" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { position: "absolute", top: "-10%", left: "50%", transform: "translateX(-50%)", width: "70%", height: "55%", background: "radial-gradient(ellipse, rgba(201,169,110,0.07) 0%, transparent 70%)", pointerEvents: "none" } }), /* @__PURE__ */ import_react.default.createElement("div", { ref, style: { maxWidth: 1180, margin: "0 auto", position: "relative", zIndex: 1 } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", marginBottom: 56, opacity: vis ? 1 : 0, transition: "opacity 0.8s ease" } }, /* @__PURE__ */ import_react.default.createElement("img", { src: "uploads/logo design.webp", alt: "Club Aranya Logo", style: { width: 80, height: 80, objectFit: "contain", marginBottom: 20, border: "1px solid rgba(201,169,110,0.3)", padding: "4px", background: "rgba(255,255,255,0.05)", boxShadow: "0 8px 32px 0 rgba(0, 0, 0, 0.2)" } }), /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 22, fontWeight: 500, letterSpacing: "0.32em", textTransform: "uppercase", color: "#c9a96e", marginBottom: 20 } }, "Club Aranya"), /* @__PURE__ */ import_react.default.createElement("h2", { style: { fontFamily: "Cormorant Garamond, serif", fontSize: "clamp(32px,4vw,56px)", fontWeight: 300, color: "#f5f0e8", lineHeight: 1.15, marginBottom: 18 } }, "Double-tiered social spaces", /* @__PURE__ */ import_react.default.createElement("br", null), /* @__PURE__ */ import_react.default.createElement("em", { style: { color: "#c9a96e" } }, "spread over 16,000+ sq ft.")), /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 14, fontWeight: 300, color: "rgba(245,240,232,0.55)", maxWidth: 520, margin: "0 auto", lineHeight: 1.85 } }, "Social, inclusive, rooted in warmth \u2014 this is where unwinding hours feel special.")), /* @__PURE__ */ import_react.default.createElement("div", { className: "club-tabs" }, spaces.map((s, i) => /* @__PURE__ */ import_react.default.createElement("button", { key: i, onClick: () => setActive(i), style: { fontFamily: "DM Sans", fontSize: 11, fontWeight: 400, letterSpacing: "0.08em", textTransform: "uppercase", padding: "11px 18px", border: "none", cursor: "pointer", background: active === i ? "#c9a96e" : "rgba(245,240,232,0.07)", color: active === i ? "#1a2e1a" : "rgba(245,240,232,0.55)", transition: "all 0.25s ease", flex: "0 0 auto" } }, s.name))), /* @__PURE__ */ import_react.default.createElement("div", { className: "club-grid", style: { gap: 3, opacity: vis ? 1 : 0, transition: "opacity 0.7s ease 0.25s" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { background: "rgba(245,240,232,0.04)", border: "1px solid rgba(201,169,110,0.15)", padding: "clamp(32px,4vw,56px) clamp(28px,4vw,52px)", display: "flex", flexDirection: "column", justifyContent: "center" } }, /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 9, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7a9e7e", marginBottom: 16 } }, spaces[active].tag), /* @__PURE__ */ import_react.default.createElement("h3", { style: { fontFamily: "Cormorant Garamond, serif", fontSize: "clamp(32px,3.5vw,46px)", fontWeight: 300, color: "#f5f0e8", marginBottom: 22, lineHeight: 1.15 } }, spaces[active].name), /* @__PURE__ */ import_react.default.createElement("p", { style: { fontFamily: "DM Sans", fontSize: 14, fontWeight: 300, color: "rgba(245,240,232,0.68)", lineHeight: 1.9 } }, spaces[active].desc)), /* @__PURE__ */ import_react.default.createElement("div", { className: "img-zoom", style: { height: 380, overflow: "hidden", position: "relative" } }, /* @__PURE__ */ import_react.default.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: `url('${spaces[active].img}')`, backgroundSize: "cover", backgroundPosition: "center", transition: "background-image 0.2s" } }))), /* @__PURE__ */ import_react.default.createElement("div", { style: { textAlign: "center", marginTop: 36, opacity: vis ? 1 : 0, transition: "opacity 0.8s ease 0.5s" } }, /* @__PURE__ */ import_react.default.createElement(CTAButton, { label: "View Full Gallery", variant: "outline", onClick: () => {
     const el = document.getElementById("gallery");
     if (el) el.scrollIntoView({ behavior: "smooth" });
   } }))));
@@ -12714,7 +12723,7 @@ function HomesSection() {
     {
       type: "2 BHK + 2T",
       label: "Aura",
-      size: "924",
+      size: "1082",
       carpet: "644",
       unit: "sq ft",
       floors: "Ground to 9th Floor",
@@ -12728,7 +12737,7 @@ function HomesSection() {
     {
       type: "3 BHK + 2T",
       label: "Celestial",
-      size: "1,379",
+      size: "1,581",
       carpet: "906",
       unit: "sq ft",
       floors: "Ground to 9th Floor",
@@ -12742,7 +12751,7 @@ function HomesSection() {
     {
       type: "3BHK+3T",
       label: "Grande",
-      size: "1,326 \u2013 1,687",
+      size: "1,377 \u2013 1,910",
       unit: "sq ft",
       floors: "Ground to 10th Floor",
       tag: "Executive Choice",
@@ -12752,20 +12761,20 @@ function HomesSection() {
       interest: "3bhk-3t",
       tower: "T1",
       subtabs: [
-        { name: "3 BHK + 3T (1221 sq ft)", size: "1221", carpet: "952", planImg: "uploads/unit-b1c.webp", floors: "Ground Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1321 sq ft)", size: "1321", carpet: "952", planImg: "uploads/UNIT-B3.webp", floors: "1st to 10th Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1348 sq ft)", size: "1348", carpet: "952", planImg: "uploads/UNIT-B1.webp", floors: "1st to 10th Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1361 sq ft)", size: "1361", carpet: "956", planImg: "uploads/UNIT-B4.webp", floors: "1st to 10th Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1442 sq ft)", size: "1442", carpet: "952", planImg: "uploads/UNIT-B3B.webp", floors: "Ground Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1446 sq ft)", size: "1446", carpet: "1023", planImg: "uploads/UNIT-B2.webp", floors: "1st to 10th Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1479 sq ft)", size: "1479", carpet: "952", planImg: "uploads/UNIT-B1B.webp", floors: "Ground Floor", tower: "T1" },
-        { name: "3 BHK + 3T (1631 sq ft)", size: "1631", carpet: "1090", planImg: "uploads/UNIT-B6.webp", floors: "Ground to 9th Floor", tower: "T2" }
+        { name: "3 BHK + 3T (1377 sq ft)", size: "1377", carpet: "952", planImg: "uploads/unit-b1c.webp", floors: "Ground Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1503 sq ft)", size: "1503", carpet: "952", planImg: "uploads/UNIT-B3.webp", floors: "1st to 10th Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1543 sq ft)", size: "1543", carpet: "952", planImg: "uploads/UNIT-B1.webp", floors: "1st to 10th Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1556 sq ft)", size: "1556", carpet: "956", planImg: "uploads/UNIT-B4.webp", floors: "1st to 10th Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1668 sq ft)", size: "1668", carpet: "952", planImg: "uploads/UNIT-B3B.webp", floors: "Ground Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1635 sq ft)", size: "1635", carpet: "1023", planImg: "uploads/UNIT-B2.webp", floors: "1st to 10th Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1716 sq ft)", size: "1716", carpet: "952", planImg: "uploads/UNIT-B1B.webp", floors: "Ground Floor", tower: "T1" },
+        { name: "3 BHK + 3T (1910 sq ft)", size: "1910", carpet: "1090", planImg: "uploads/UNIT-B6.webp", floors: "Ground to 9th Floor", tower: "T2" }
       ]
     },
     {
       type: "3 BHK + 3T + Terrace",
       label: "Garden Homes",
-      size: "2,280 \u2013 2,687",
+      size: "1,503 \u2013 1,556",
       unit: "sq ft",
       floors: "1st & 2nd Floor",
       tag: "Limited Edition",
@@ -12776,21 +12785,21 @@ function HomesSection() {
       tower: "T1",
       subtabs: [
         {
-          name: "3 BHK + 3T + TERRACE (2280 sq ft)",
-          size: "2,280",
+          name: "3 BHK + 3T + TERRACE (1503 sq ft)",
+          size: "1503",
           carpet: "952",
           planImg: "uploads/UNIT-B3A.webp",
           floors: "2nd Floor",
           tower: "T1",
           hl: ["Private terrace up to 959 sq ft", "Garden-level seclusion", "Exclusive green views", "Personal outdoor retreat"]
         },
-        { name: "3 BHK + 3T + TERRACE (2,687 sq ft)", size: "2,687", carpet: "956", planImg: "uploads/UNIT-B4A.webp", floors: "2nd Floor", tower: "T1" }
+        { name: "3 BHK + 3T + TERRACE (1556 sq ft)", size: "1556", carpet: "956", planImg: "uploads/UNIT-B4A.webp", floors: "2nd Floor", tower: "T1" }
       ]
     },
     {
       type: "4 BHK",
       label: "Prestige",
-      size: "1,623 \u2013 1,895",
+      size: "2,127 \u2013 2,144",
       unit: "sq ft",
       floors: "1st Floor onwards",
       tag: "Select Floors",
@@ -12801,8 +12810,8 @@ function HomesSection() {
       tower: "T1",
       subtabs: [
         {
-          name: "4 BHK (1867 sq ft)",
-          size: "1,867",
+          name: "4 BHK (2127 sq ft)",
+          size: "2127",
           carpet: "1,343",
           planImg: "uploads/UNIT-C2.webp",
           floors: "3rd to 10th Floor",
@@ -12810,8 +12819,8 @@ function HomesSection() {
           hl: ["Dedicated Puja/Store Room", "Expansive balconies", "Premium finishes throughout"]
         },
         {
-          name: "4 BHK (1895 sq ft)",
-          size: "1,895",
+          name: "4 BHK (2144 sq ft)",
+          size: "2144",
           carpet: "1,332",
           planImg: "uploads/UNIT-C1.webp",
           floors: "1st Floor",
@@ -12823,7 +12832,7 @@ function HomesSection() {
     {
       type: "4 BHK + Terrace",
       label: "Signature",
-      size: "2,532 \u2013 3,044",
+      size: "2,127 \u2013 2,144",
       unit: "sq ft",
       floors: "1st\u20132nd Floor",
       tag: "Ultra Premium",
@@ -12834,8 +12843,8 @@ function HomesSection() {
       tower: "T1",
       subtabs: [
         {
-          name: "4 BHK + TERRACE (2236 sq ft)",
-          size: "2,236",
+          name: "4 BHK + TERRACE (2144 sq ft)",
+          size: "2144",
           carpet: "1,332",
           planImg: "uploads/UNIT-C1A.webp",
           floors: "1st Floor",
@@ -12843,8 +12852,8 @@ function HomesSection() {
           hl: ["Terrace up to 341 sq ft", "Staff Room", "Full-perimeter views", "Legacy-grade specification"]
         },
         {
-          name: "4 BHK + TERRACE (2532 sq ft)",
-          size: "2,532",
+          name: "4 BHK + TERRACE (2144 sq ft)",
+          size: "2144",
           carpet: "1,332",
           planImg: "uploads/UNIT-C1B.webp",
           floors: "2nd Floor",
@@ -12852,8 +12861,8 @@ function HomesSection() {
           hl: ["Terrace up to 637 sq ft", "Staff Room", "Full-perimeter views", "Legacy-grade specification"]
         },
         {
-          name: "4 BHK + TERRACE (3044 sq ft)",
-          size: "3,044",
+          name: "4 BHK + TERRACE (2127 sq ft)",
+          size: "2127",
           carpet: "1,343",
           planImg: "uploads/UNIT-C2A.webp",
           floors: "2nd Floor",

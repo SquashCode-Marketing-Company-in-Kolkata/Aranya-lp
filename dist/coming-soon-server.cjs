@@ -481,7 +481,7 @@ var require_react_production = __commonJS({
     exports2.useTransition = function() {
       return ReactSharedInternals.H.useTransition();
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -650,7 +650,7 @@ var require_react_dom_production = __commonJS({
     exports2.useFormStatus = function() {
       return ReactSharedInternals.H.useHostTransitionStatus();
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -5927,7 +5927,7 @@ A.finished.finally(function(){document.__reactViewTransition===A&&(document.__re
         'The server used "renderToString" which does not support Suspense. If you intended for this Suspense boundary to render the fallback content on the server consider throwing an Error somewhere within the Suspense boundary. If you intended to have the server wait for the suspended component please switch to "renderToPipeableStream" which supports Suspense on the server'
       );
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 
@@ -5967,6 +5967,11 @@ var require_react_dom_server_node_production = __commonJS({
     }
     var REACT_OPTIMISTIC_KEY = /* @__PURE__ */ Symbol.for("react.optimistic_key");
     var isArrayImpl = Array.isArray;
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    var supportsArrayBufferDetached = hasOwnProperty.call(
+      ArrayBuffer.prototype,
+      "detached"
+    );
     var scheduleMicrotask = queueMicrotask;
     function flushBuffered(destination) {
       "function" === typeof destination.flush && destination.flush();
@@ -5997,11 +6002,16 @@ var require_react_dom_server_node_production = __commonJS({
             ).written);
             4096 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(4096), writtenBytes = 0);
           }
+      } else if (0 === chunk.byteLength) {
+        if (supportsArrayBufferDetached && chunk.buffer.detached)
+          throw Error(
+            "Cannot transport a detached buffer. This usually happens when trying to transport multiple buffer-spanning views on the same underyling buffer. Either reuse the exact same view by identity or copy the underlying buffer manually via `view.slice()`."
+          );
       } else
-        0 !== chunk.byteLength && (4096 < chunk.byteLength ? (0 < writtenBytes && (writeToDestination(
+        4096 < chunk.byteLength ? (0 < writtenBytes && (writeToDestination(
           destination,
           currentView.subarray(0, writtenBytes)
-        ), currentView = new Uint8Array(4096), writtenBytes = 0), writeToDestination(destination, chunk)) : (target = currentView.length - writtenBytes, target < chunk.byteLength && (0 === target ? writeToDestination(destination, currentView) : (currentView.set(chunk.subarray(0, target), writtenBytes), writtenBytes += target, writeToDestination(destination, currentView), chunk = chunk.subarray(target)), currentView = new Uint8Array(4096), writtenBytes = 0), currentView.set(chunk, writtenBytes), writtenBytes += chunk.byteLength, 4096 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(4096), writtenBytes = 0)));
+        ), currentView = new Uint8Array(4096), writtenBytes = 0), writeToDestination(destination, chunk)) : (target = currentView.length - writtenBytes, target < chunk.byteLength && (0 === target ? writeToDestination(destination, currentView) : (currentView.set(chunk.subarray(0, target), writtenBytes), writtenBytes += target, writeToDestination(destination, currentView), chunk = chunk.subarray(target)), currentView = new Uint8Array(4096), writtenBytes = 0), currentView.set(chunk, writtenBytes), writtenBytes += chunk.byteLength, 4096 === writtenBytes && (writeToDestination(destination, currentView), currentView = new Uint8Array(4096), writtenBytes = 0));
     }
     function writeToDestination(destination, view) {
       destination = destination.write(view);
@@ -6025,7 +6035,6 @@ var require_react_dom_server_node_production = __commonJS({
       return "string" === typeof chunk ? Buffer.byteLength(chunk, "utf8") : chunk.byteLength;
     }
     var assign = Object.assign;
-    var hasOwnProperty = Object.prototype.hasOwnProperty;
     var VALID_ATTRIBUTE_NAME_REGEX = RegExp(
       "^[:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD][:A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040]*$"
     );
@@ -11627,9 +11636,9 @@ A.finished.finally(function(){document.__reactViewTransition===A&&(document.__re
     }
     function ensureCorrectIsomorphicReactVersion() {
       var isomorphicReactPackageVersion = React3.version;
-      if ("19.3.0" !== isomorphicReactPackageVersion)
+      if ("19.3.1" !== isomorphicReactPackageVersion)
         throw Error(
-          'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.3.0\nLearn more: https://react.dev/warnings/version-mismatch")
+          'Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:\n  - react:      ' + (isomorphicReactPackageVersion + "\n  - react-dom:  19.3.1\nLearn more: https://react.dev/warnings/version-mismatch")
         );
     }
     ensureCorrectIsomorphicReactVersion();
@@ -12092,7 +12101,7 @@ A.finished.finally(function(){document.__reactViewTransition===A&&(document.__re
         }
       };
     };
-    exports2.version = "19.3.0";
+    exports2.version = "19.3.1";
   }
 });
 

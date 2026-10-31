@@ -768,7 +768,7 @@ import { submitLead } from './submitLead';
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: 3, marginBottom: 3, flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div className="club-tabs">
               {spaces.map((s, i) => (
                 <button key={i} onClick={() => setActive(i)} style={{ fontFamily: 'DM Sans', fontSize: 11, fontWeight: 400, letterSpacing: '0.08em', textTransform: 'uppercase', padding: '11px 18px', border: 'none', cursor: 'pointer', background: active === i ? '#c9a96e' : 'rgba(245,240,232,0.07)', color: active === i ? '#1a2e1a' : 'rgba(245,240,232,0.55)', transition: 'all 0.25s ease', flex: '0 0 auto' }}>{s.name}</button>
               ))}
@@ -846,7 +846,7 @@ function HomesSection() {
 
   const units = [
     {
-      type: '2 BHK + 2T', label: 'Aura', size: '924', carpet: '644', unit: 'sq ft',
+      type: '2 BHK + 2T', label: 'Aura', size: '1082', carpet: '644', unit: 'sq ft',
       floors: 'Ground to 9th Floor', tag: 'Boutique Collection', price: '',
       planImg: 'uploads/unit-d-2bhk.webp',
       hl: ['Efficient 2 BHK layout', 'Optimized room planning', 'Clear circulation flow', 'Comfort-focused apartment design'],
@@ -854,7 +854,7 @@ function HomesSection() {
       tower: 'T2',
     },
     {
-      type: '3 BHK + 2T', label: 'Celestial', size: '1,379', carpet: '906', unit: 'sq ft',
+      type: '3 BHK + 2T', label: 'Celestial', size: '1,581', carpet: '906', unit: 'sq ft',
       floors: 'Ground to 9th Floor', tag: 'Most Popular', price: '₹5,000 – ₹6,000 /sq ft',
       planImg: 'uploads/unit-a.webp',
       hl: ['East-West cross ventilation', 'Utility balcony with kitchen', 'Jumbo vitrified tile flooring', 'Smart digital main-door lock'],
@@ -862,25 +862,25 @@ function HomesSection() {
       tower: 'T2',
     },
     {
-      type: '3BHK+3T', label: 'Grande', size: '1,326 – 1,687', unit: 'sq ft',
+      type: '3BHK+3T', label: 'Grande', size: '1,377 – 1,910', unit: 'sq ft',
       floors: 'Ground to 10th Floor', tag: 'Executive Choice', price: '₹5,200 – ₹6,200 /sq ft',
       planImg: 'uploads/unit-a.webp',
       hl: ['Spacious 3 BHK + 3 Toilet layout', 'East-West cross ventilation', 'Jumbo vitrified tile flooring', 'Smart digital main-door lock'],
       interest: '3bhk-3t',
       tower: 'T1',
       subtabs: [
-        { name: '3 BHK + 3T (1221 sq ft)', size: '1221', carpet: '952', planImg: 'uploads/unit-b1c.webp', floors: 'Ground Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1321 sq ft)', size: '1321', carpet: '952', planImg: 'uploads/UNIT-B3.webp', floors: '1st to 10th Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1348 sq ft)', size: '1348', carpet: '952', planImg: 'uploads/UNIT-B1.webp', floors: '1st to 10th Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1361 sq ft)', size: '1361', carpet: '956', planImg: 'uploads/UNIT-B4.webp', floors: '1st to 10th Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1442 sq ft)', size: '1442', carpet: '952', planImg: 'uploads/UNIT-B3B.webp', floors: 'Ground Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1446 sq ft)', size: '1446', carpet: '1023', planImg: 'uploads/UNIT-B2.webp', floors: '1st to 10th Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1479 sq ft)', size: '1479', carpet: '952', planImg: 'uploads/UNIT-B1B.webp', floors: 'Ground Floor', tower: 'T1' },
-        { name: '3 BHK + 3T (1631 sq ft)', size: '1631', carpet: '1090', planImg: 'uploads/UNIT-B6.webp', floors: 'Ground to 9th Floor', tower: 'T2' }
+        { name: '3 BHK + 3T (1377 sq ft)', size: '1377', carpet: '952', planImg: 'uploads/unit-b1c.webp', floors: 'Ground Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1503 sq ft)', size: '1503', carpet: '952', planImg: 'uploads/UNIT-B3.webp', floors: '1st to 10th Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1543 sq ft)', size: '1543', carpet: '952', planImg: 'uploads/UNIT-B1.webp', floors: '1st to 10th Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1556 sq ft)', size: '1556', carpet: '956', planImg: 'uploads/UNIT-B4.webp', floors: '1st to 10th Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1668 sq ft)', size: '1668', carpet: '952', planImg: 'uploads/UNIT-B3B.webp', floors: 'Ground Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1635 sq ft)', size: '1635', carpet: '1023', planImg: 'uploads/UNIT-B2.webp', floors: '1st to 10th Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1716 sq ft)', size: '1716', carpet: '952', planImg: 'uploads/UNIT-B1B.webp', floors: 'Ground Floor', tower: 'T1' },
+        { name: '3 BHK + 3T (1910 sq ft)', size: '1910', carpet: '1090', planImg: 'uploads/UNIT-B6.webp', floors: 'Ground to 9th Floor', tower: 'T2' }
       ]
     },
     {
-      type: '3 BHK + 3T + Terrace', label: 'Garden Homes', size: '2,280 – 2,687', unit: 'sq ft',
+      type: '3 BHK + 3T + Terrace', label: 'Garden Homes', size: '1,503 – 1,556', unit: 'sq ft',
       floors: '1st & 2nd Floor', tag: 'Limited Edition', price: '₹5,500 – ₹6,500 /sq ft',
       planImg: 'uploads/unit-b1c.webp',
       hl: ['Private terrace up to 1,326 sq ft', 'Garden-level seclusion', 'Exclusive green views', 'Personal outdoor retreat'],
@@ -888,19 +888,19 @@ function HomesSection() {
       tower: 'T1',
       subtabs: [
         {
-          name: '3 BHK + 3T + TERRACE (2280 sq ft)',
-          size: '2,280',
+          name: '3 BHK + 3T + TERRACE (1503 sq ft)',
+          size: '1503',
           carpet: '952',
           planImg: 'uploads/UNIT-B3A.webp',
           floors: '2nd Floor',
           tower: 'T1',
           hl: ['Private terrace up to 959 sq ft', 'Garden-level seclusion', 'Exclusive green views', 'Personal outdoor retreat']
         },
-        { name: '3 BHK + 3T + TERRACE (2,687 sq ft)', size: '2,687', carpet: '956', planImg: 'uploads/UNIT-B4A.webp', floors: '2nd Floor', tower: 'T1' }
+        { name: '3 BHK + 3T + TERRACE (1556 sq ft)', size: '1556', carpet: '956', planImg: 'uploads/UNIT-B4A.webp', floors: '2nd Floor', tower: 'T1' }
       ]
     },
     {
-      type: '4 BHK', label: 'Prestige', size: '1,623 – 1,895', unit: 'sq ft',
+      type: '4 BHK', label: 'Prestige', size: '2,127 – 2,144', unit: 'sq ft',
       floors: '1st Floor onwards', tag: 'Select Floors', price: '₹5,500 – ₹6,500 /sq ft',
       planImg: 'uploads/unit-a.webp',
       hl: ['Dedicated staff room', 'Puja room option', 'Expansive corner balconies', 'Premium finishes throughout'],
@@ -908,8 +908,8 @@ function HomesSection() {
       tower: 'T1',
       subtabs: [
         {
-          name: '4 BHK (1867 sq ft)',
-          size: '1,867',
+          name: '4 BHK (2127 sq ft)',
+          size: '2127',
           carpet: '1,343',
           planImg: 'uploads/UNIT-C2.webp',
           floors: '3rd to 10th Floor',
@@ -917,8 +917,8 @@ function HomesSection() {
           hl: ['Dedicated Puja/Store Room', 'Expansive balconies', 'Premium finishes throughout']
         },
         {
-          name: '4 BHK (1895 sq ft)',
-          size: '1,895',
+          name: '4 BHK (2144 sq ft)',
+          size: '2144',
           carpet: '1,332',
           planImg: 'uploads/UNIT-C1.webp',
           floors: '1st Floor',
@@ -928,7 +928,7 @@ function HomesSection() {
       ]
     },
     {
-      type: '4 BHK + Terrace', label: 'Signature', size: '2,532 – 3,044', unit: 'sq ft',
+      type: '4 BHK + Terrace', label: 'Signature', size: '2,127 – 2,144', unit: 'sq ft',
       floors: '1st–2nd Floor', tag: 'Ultra Premium', price: '₹6,000 – ₹7,000 /sq ft',
       planImg: 'uploads/unit-b1c.webp',
       hl: ['Terrace up to 1,177 sq ft', 'Puja + staff rooms', 'Full-perimeter views', 'Legacy-grade specification'],
@@ -936,8 +936,8 @@ function HomesSection() {
       tower: 'T1',
       subtabs: [
         {
-          name: '4 BHK + TERRACE (2236 sq ft)',
-          size: '2,236',
+          name: '4 BHK + TERRACE (2144 sq ft)',
+          size: '2144',
           carpet: '1,332',
           planImg: 'uploads/UNIT-C1A.webp',
           floors: '1st Floor',
@@ -945,8 +945,8 @@ function HomesSection() {
           hl: ['Terrace up to 341 sq ft', 'Staff Room', 'Full-perimeter views', 'Legacy-grade specification']
         },
         {
-          name: '4 BHK + TERRACE (2532 sq ft)',
-          size: '2,532',
+          name: '4 BHK + TERRACE (2144 sq ft)',
+          size: '2144',
           carpet: '1,332',
           planImg: 'uploads/UNIT-C1B.webp',
           floors: '2nd Floor',
@@ -954,8 +954,8 @@ function HomesSection() {
           hl: ['Terrace up to 637 sq ft', 'Staff Room', 'Full-perimeter views', 'Legacy-grade specification']
         },
         {
-          name: '4 BHK + TERRACE (3044 sq ft)',
-          size: '3,044',
+          name: '4 BHK + TERRACE (2127 sq ft)',
+          size: '2127',
           carpet: '1,343',
           planImg: 'uploads/UNIT-C2A.webp',
           floors: '2nd Floor',
