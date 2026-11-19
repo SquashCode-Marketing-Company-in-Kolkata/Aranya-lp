@@ -3,6 +3,9 @@
   "name": "aranya-lp",
   "main": "worker/index.mjs",
   "compatibility_date": "2026-09-21",
+  "vars": {
+    "SUPABASE_URL": "https://oudimxyajbtjeenjzgfl.supabase.co"
+  },
   "assets": {
     "directory": "./site",
     "binding": "ASSETS",
