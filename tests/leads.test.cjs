@@ -55,6 +55,47 @@ test('normalizes +91 phone numbers to 10 digits before the webhook', async () =>
   assert.equal(result.statusCode, 200);
 });
 
+test('routes each form to its configured destinations', async () => {
+  const shared = { name: 'Test', phone: '9876543210', email: 'test@example.com', utm_campaign: 'launch' };
+  const preferred = {
+    locality: 'Guwahati', purchasing_as: 'Individual / family', home_sizes: ['2 BHK', '3 BHK'],
+    budget: 'Up to ₹50 lakh', purpose: 'Own use', timeline: 'Within 1 month', funding: 'Home loan',
+    preview_times: ['Weekend'], heard_about: 'Other', consent: 'yes',
+  };
+  const webhook = 'https://pabbly.example/webhook';
+  const supabase = 'https://project.supabase.co';
+  for (const [source, destinations] of [
+    ['main_enquiry', [supabase + '/rest/v1/landing_page_leads', webhook]],
+    ['coming_soon', [webhook]],
+    ['preferred_access', [supabase + '/rest/v1/preferred_access_leads']],
+  ]) {
+    const calls = [];
+    const input = source === 'preferred_access' ? { ...shared, ...preferred } : shared;
+    const response = await handleLead('POST', JSON.stringify({ ...input, form_source: source }), {
+      webhookUrl: webhook, supabaseUrl: supabase, supabaseSecretKey: 'sb_secret_test',
+      fetchImpl: async (url, request) => {
+        calls.push({ url: String(url), payload: JSON.parse(request.body) });
+        return { ok: true };
+      },
+    });
+    assert.equal(response.statusCode, 200);
+    assert.deepEqual(calls.map(call => call.url), destinations);
+    for (const { url, payload } of calls) {
+      assert.equal(payload.utm_campaign, 'launch');
+      if (url === webhook) assert.equal(payload.timezone, 'Asia/Kolkata');
+      if (source === 'preferred_access') {
+        assert.deepEqual(payload.home_sizes, preferred.home_sizes);
+        assert.deepEqual(payload.preview_times, preferred.preview_times);
+        assert.equal(payload.consent, true);
+      }
+    }
+  }
+  const unavailable = await handleLead('POST', JSON.stringify({ ...shared, ...preferred, form_source: 'preferred_access' }), {
+    webhookUrl: webhook, supabaseUrl: '', supabaseSecretKey: '',
+  });
+  assert.equal(unavailable.statusCode, 503);
+});
+
 test('invalid requests never reach the webhook', async () => {
   const options = { fetchImpl: () => assert.fail('Unexpected webhook call') };
   assert.equal((await handleLead('GET', '', options)).statusCode, 405);

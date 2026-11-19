@@ -130,6 +130,20 @@
       h1 { font-size: clamp(2rem, 4vw, 3rem); }
       .steps { margin-block: .75rem; }
     }
+    @media (max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse) {
+      .hero { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; justify-content: start; gap: .8rem; padding-block: .75rem; background: #182a20; }
+      .brand img { height: 1.65rem; }
+      .location, .intro { display: none; }
+      h1 { font-size: clamp(1.45rem, 4.5vw, 2rem); }
+      main { align-content: start; padding-inline: clamp(1rem, 5vw, 2rem); }
+      form, .confirmation { max-width: 30rem; }
+      .stage { color: var(--ink); }
+      .choices label { border-color: transparent; border-radius: .4rem; background: #eef1ea; }
+      .choices label:has(:checked) { border-color: #648364; background: #e1ecdd; }
+      .consent label { padding-inline: 0; border-color: transparent; background: transparent; }
+      .consent label:has(:checked) { border-color: transparent; background: transparent; }
+      .submit-area button[type="submit"] { flex: 1; }
+    }
     @media (prefers-reduced-motion: reduce) {
       .step-in { animation: none; }
       .choices label, progress::-webkit-progress-value { transition: none; }
