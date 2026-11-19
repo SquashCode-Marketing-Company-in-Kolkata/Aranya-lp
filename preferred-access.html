@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aranya Preferred Access | Guwahati</title>
+  <meta name="description" content="Register your interest in a private preview of Aranya by Rang Homes in Guwahati.">
+  <link rel="icon" type="image/webp" href="/uploads/logo%20design.webp">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: light; --ink: #182a20; --muted: #526156; --line: #dce3d8; --paper: #f8f9f4; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100svh; display: grid; grid-template-columns: minmax(0, .86fr) minmax(0, 1fr); font: 1rem/1.45 "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+    h1, h2, legend, .field > span:first-child { font-family: "Cormorant Garamond", Georgia, serif; line-height: 1; margin: 0; }
+    .hero { display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; padding: clamp(1.5rem, 5vw, 5rem); color: #fff; background: linear-gradient(180deg, #101e15b8, #101e1533 42%, #101e15f5 100%), #1a2e1a url('/uploads/shot_07_5kshot_07_5k.webp') center / cover; }
+    .brand a { display: inline-flex; }
+    .brand img { display: block; height: 3.5rem; width: auto; filter: brightness(0) saturate(100%) invert(72%) sepia(42%) saturate(480%) hue-rotate(2deg) brightness(98%) contrast(90%); }
+    .location, .stage { font-size: .875rem; font-weight: 600; }
+    .location { color: #f2d8a1; margin: 0 0 .6rem; }
+    h1 { font-size: clamp(2.4rem, 4vw, 4.2rem); font-weight: 500; max-width: 12ch; }
+    .intro { color: #f0f4eb; max-width: 29rem; margin-bottom: 0; }
+    main { display: grid; align-content: center; min-width: 0; padding: clamp(1.25rem, 5vw, 5rem); }
+    form, .confirmation { width: min(100%, 36rem); margin-inline: auto; }
+    .progress-head { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; color: var(--muted); }
+    .progress-head p { margin: 0; }
+    .counter { font-size: .875rem; font-variant-numeric: tabular-nums; }
+    progress { display: block; appearance: none; width: 100%; height: .25rem; margin-top: .65rem; border: 0; border-radius: 2rem; background: #dde5d9; overflow: hidden; }
+    progress::-webkit-progress-bar { background: #dde5d9; }
+    progress::-webkit-progress-value { background: #557454; transition: width .28s ease; }
+    progress::-moz-progress-bar { background: #557454; }
+    .steps { margin-block: clamp(1.35rem, 5vh, 3rem) 1.35rem; }
+    h2, legend, .field > span:first-child { font-size: clamp(1.55rem, 2.5vw, 2.2rem); font-weight: 600; }
+    .question { margin: 0; padding: 0; border: 0; min-width: 0; }
+    .field { display: grid; gap: .85rem; min-width: 0; }
+    legend { padding: 0; margin-bottom: .85rem; }
+    small, .help, .terms { color: var(--muted); font: 400 .875rem/1.45 "DM Sans", sans-serif; }
+    .help { margin: 0 0 .5rem; }
+    .required { color: #805b30; font: 500 .9rem "DM Sans", sans-serif; vertical-align: middle; }
+    input:not([type="radio"], [type="checkbox"]), select, textarea { width: 100%; min-height: 3rem; border: 1px solid #a6b5a5; border-radius: .75rem; background: #fff; padding: .65rem .8rem; color: var(--ink); font: inherit; }
+    select { padding-right: 1.5rem; text-overflow: ellipsis; }
+    textarea { resize: vertical; }
+    .choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+    .choices label, .consent label { display: flex; align-items: center; gap: .55rem; min-height: 2.85rem; padding: .55rem .65rem; border: 1px solid var(--line); border-radius: .75rem; background: white; cursor: pointer; transition: background .16s, border-color .16s; }
+    .choices label:hover, .consent label:hover { border-color: #769277; }
+    .choices label:has(:checked), .consent label:has(:checked) { background: #e7efe3; border-color: #648364; }
+    input[type="radio"], input[type="checkbox"] { flex: 0 0 auto; accent-color: #34583c; width: 1rem; height: 1rem; margin: 0; }
+    :focus-visible { outline: 2px solid #567649; outline-offset: 3px; }
+    .step-in { animation: reveal .28s cubic-bezier(.2,.65,.3,1) both; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(.45rem); } to { opacity: 1; transform: translateY(0); } }
+    .submit-area { display: flex; gap: .55rem; align-items: center; }
+    button { border: 1px solid transparent; border-radius: .75rem; background: #23452e; color: #fff; font: 600 1rem "DM Sans", sans-serif; min-height: 2.8rem; padding: .55rem .95rem; cursor: pointer; }
+    button:hover { background: #16321f; }
+    button:disabled { opacity: .65; cursor: wait; }
+    .back { background: transparent; color: var(--ink); border-color: #a6b5a5; }
+    .back:hover { background: #e7efe3; }
+    .reason { display: block; margin: .55rem 0 0; color: var(--muted); font: 400 .875rem/1.35 "DM Sans", sans-serif; }
+    .reason strong { font-weight: 600; color: var(--ink); }
+    .field .reason { margin-top: 0; }
+    .error { color: #942b20; margin: .45rem 0 0; font-size: .875rem; }
+    .terms { margin: .8rem 0 0; }
+    .confirmation p { max-width: 29rem; }
+    [hidden] { display: none !important; }
+    @media (max-width: 61rem) {
+      body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+      .hero { padding: 1rem clamp(1rem, 5vw, 3rem); gap: .68rem; background: linear-gradient(90deg, #101e15f0, #101e1580), #1a2e1a url('/uploads/shot_07_5kshot_07_5k.webp') center 44% / cover; }
+      .brand img { height: 2.35rem; }
+      h1 { max-width: none; font-size: clamp(1.85rem, 4.5vw, 2.8rem); }
+      .intro { margin: .45rem 0 0; font-size: .875rem; }
+      .location { margin-bottom: .2rem; }
+      main { padding: 1rem clamp(1rem, 5vw, 3rem); }
+    }
+    @media (max-width: 28rem) {
+      .choices label, .consent label { font-size: .875rem; }
+      .steps { margin-block: 1rem; }
+    }
+    @media (max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse) {
+      .steps { margin-block: .8rem; }
+      .steps .card { display: contents; }
+      .steps :is(.question, .field):not([hidden]) { margin-bottom: .6rem; }
+      .steps :is(legend, .field > span:first-child) { font-size: clamp(1.3rem, 4vw, 1.6rem); }
+      .field { gap: .45rem; }
+      legend { margin-bottom: .35rem; }
+      .choices { gap: .35rem; }
+      .choices label, .consent label { min-height: 2.75rem; padding: .35rem .5rem; line-height: 1.2; }
+      textarea { height: 3.5rem; }
+    }
+    @media (max-height: 40rem) and (max-width: 61rem) {
+      .hero { padding-block: .75rem; gap: .45rem; }
+      .brand img { height: 1.85rem; }
+      h1 { font-size: clamp(1.9rem, 6vw, 2.75rem); }
+      .intro { margin-top: .3rem; }
+      .choices label { padding-block: .45rem; }
+    }
+    @media (max-height: 40rem) and (max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse) {
+      .hero { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .65rem; padding-block: .6rem; }
+      .brand img { height: 1.55rem; }
+      h1 { font-size: clamp(1.5rem, 4.9vw, 2.1rem); }
+      .intro { display: none; }
+      .location { font-size: .75rem; }
+      .terms { margin-top: .45rem; font-size: .75rem; }
+      main { padding-block: .5rem; }
+      progress { margin-top: .4rem; }
+      .steps { margin-block: .5rem; }
+      .steps :is(.question, .field):not([hidden]) { margin-bottom: .4rem; }
+      .choices label, .consent label { min-height: 2.15rem; padding-block: .2rem; }
+      .submit-area button { min-height: 2.5rem; }
+      .reason { margin-top: .35rem; font-size: .8125rem; }
+    }
+    @media (max-height: 33rem) and (max-width: 61rem) {
+      .intro { display: none; }
+      .hero { padding-block: .55rem; gap: .3rem; }
+      main { align-content: start; }
+      .steps { margin-block: .75rem; }
+    }
+    @media (max-height: 28rem) and (min-width: 34rem) and (max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse) {
+      main { padding-block: .4rem; }
+      form { width: 100%; }
+      .steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-block: .35rem; }
+      .steps .fields { display: contents; }
+      .steps :is(.question, .field):not([hidden]) { margin-bottom: 0; }
+      .steps :is(legend, .field > span:first-child) { font-size: 1.3rem; }
+      .choices label, .consent label { font-size: .875rem; min-height: 2rem; }
+    }
+    @media (max-height: 34rem) and (min-width: 47.001rem) and (pointer: fine) {
+      body { grid-template-columns: minmax(0, .68fr) minmax(0, 1fr); grid-template-rows: auto; }
+      .hero, main { padding: 1rem clamp(1rem, 3vw, 2.5rem); }
+      .hero { gap: .5rem; }
+      h1 { font-size: clamp(2rem, 4vw, 3rem); }
+      .steps { margin-block: .75rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .step-in { animation: none; }
+      .choices label, progress::-webkit-progress-value { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="brand"><a href="/"><img src="/uploads/asset%201@3x.webp" alt="Aranya by Rang Homes"></a></div>
+    <div class="hero-content">
+      <p class="location">Guwahati, Assam · Pre-launch registration</p>
+      <h1>Aranya Preferred Access</h1>
+      <p class="intro">Get invited to a private preview with early access to launch pricing.</p>
+    </div>
+  </header>
+  <main>
+    <noscript><p>Enable JavaScript to complete your registration.</p></noscript>
+    <form id="preferred-access" method="post" action="/api/leads" novalidate hidden>
+      <div class="progress-head">
+        <p class="stage" id="stage"></p>
+        <p class="counter" id="counter"></p>
+      </div>
+      <progress id="progress" aria-label="Registration progress"></progress>
+      <div class="steps">
+      <section class="card" aria-labelledby="details-title">
+        <h2 id="details-title">Your details</h2>
+        <div class="fields">
+          <label class="field"><span>Full name <span class="required">*</span></span><input name="name" autocomplete="name" maxlength="120" required></label>
+          <label class="field"><span>Mobile / WhatsApp number <span class="required">*</span></span><input name="phone" type="tel" autocomplete="tel-national" inputmode="numeric" pattern="[6-9][0-9]{9}" maxlength="10" title="Enter a 10-digit Indian mobile number beginning with 6, 7, 8 or 9." placeholder="10-digit Indian mobile number" required></label>
+          <label class="field"><span>Email <small>(optional)</small></span><input name="email" type="email" autocomplete="email" maxlength="254"></label>
+          <label class="field"><span>Current city and locality <span class="required">*</span></span><input name="locality" maxlength="160" placeholder="e.g. Guwahati, Zoo Road" required></label>
+        </div>
+        <fieldset class="question">
+          <legend>Purchasing as <span class="required">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="purchasing_as" value="Individual / family" required> Individual / family</label>
+            <label><input type="radio" name="purchasing_as" value="Joint with family member"> Joint with family member</label>
+            <label><input type="radio" name="purchasing_as" value="Non-resident buyer"> Non-resident buyer</label>
+            <label><input type="radio" name="purchasing_as" value="Channel partner / broker"> Channel partner / broker</label>
+          </div>
+        </fieldset>
+      </section>
+      <section class="card" aria-labelledby="preferences-title">
+        <h2 id="preferences-title">What you are looking for</h2>
+        <fieldset class="question" id="home-sizes" aria-describedby="home-help home-error">
+          <legend>Preferred home size <span class="required">*</span></legend>
+          <p class="help" id="home-help">Select all that apply.</p>
+          <div class="choices">
+            <label><input type="checkbox" name="home_sizes" value="2 BHK"> 2 BHK</label>
+            <label><input type="checkbox" name="home_sizes" value="3 BHK"> 3 BHK</label>
+            <label><input type="checkbox" name="home_sizes" value="4 BHK"> 4 BHK</label>
+            <label><input type="checkbox" name="home_sizes" value="Not decided"> Not decided</label>
+          </div>
+          <p class="error" id="home-error" hidden>Select at least one preferred home size.</p>
+        </fieldset>
+        <fieldset class="question">
+          <legend>Budget range <span class="required">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="budget" value="Up to ₹50 lakh" required> Up to ₹50 lakh</label>
+            <label><input type="radio" name="budget" value="₹50 lakh to ₹75 lakh"> ₹50 lakh to ₹75 lakh</label>
+            <label><input type="radio" name="budget" value="₹75 lakh to ₹1 crore"> ₹75 lakh to ₹1 crore</label>
+            <label><input type="radio" name="budget" value="₹1 crore to ₹1.5 crore"> ₹1 crore to ₹1.5 crore</label>
+            <label><input type="radio" name="budget" value="Above ₹1.5 crore"> Above ₹1.5 crore</label>
+          </div>
+        </fieldset>
+        <fieldset class="question">
+          <legend>Purpose of purchase <span class="required">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="purpose" value="Own use" required> Own use</label>
+            <label><input type="radio" name="purpose" value="Investment"> Investment</label>
+            <label><input type="radio" name="purpose" value="Both / undecided"> Both / undecided</label>
+          </div>
+        </fieldset>
+        <fieldset class="question">
+          <legend>Planning to buy <span class="required">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="timeline" value="Within 1 month" required> Within 1 month</label>
+            <label><input type="radio" name="timeline" value="1 to 3 months"> 1 to 3 months</label>
+            <label><input type="radio" name="timeline" value="3 to 6 months"> 3 to 6 months</label>
+            <label><input type="radio" name="timeline" value="Just exploring"> Just exploring</label>
+          </div>
+        </fieldset>
+        <fieldset class="question">
+          <legend>Funding <span class="required">*</span></legend>
+          <div class="choices">
+            <label><input type="radio" name="funding" value="Home loan" required> Home loan</label>
+            <label><input type="radio" name="funding" value="Self-funded"> Self-funded</label>
+            <label><input type="radio" name="funding" value="Partly loan, partly self-funded"> Partly loan, partly self-funded</label>
+            <label><input type="radio" name="funding" value="Not decided"> Not decided</label>
+          </div>
+        </fieldset>
+      </section>
+      <section class="card" aria-labelledby="preview-title">
+        <h2 id="preview-title">Preview visit</h2>
+        <fieldset class="question">
+          <legend>Preferred time for the preview <small>(optional)</small></legend>
+          <p class="help">Select all that apply.</p>
+          <div class="choices">
+            <label><input type="checkbox" name="preview_times" value="Weekday morning"> Weekday morning</label>
+            <label><input type="checkbox" name="preview_times" value="Weekday evening"> Weekday evening</label>
+            <label><input type="checkbox" name="preview_times" value="Weekend"> Weekend</label>
+          </div>
+        </fieldset>
+        <fieldset class="question">
+          <legend>People visiting with you <small>(optional)</small></legend>
+          <div class="choices">
+            <label><input type="radio" name="party_size" value="Just me"> Just me</label>
+            <label><input type="radio" name="party_size" value="2 people"> 2 people</label>
+            <label><input type="radio" name="party_size" value="3 to 4 people"> 3 to 4 people</label>
+            <label><input type="radio" name="party_size" value="5 or more"> 5 or more</label>
+          </div>
+        </fieldset>
+        <label class="field">
+          <span>How did you hear about Aranya? <span class="required">*</span></span>
+          <select name="heard_about" required>
+            <option value="">Select an option</option>
+            <option>Existing customer of our other projects</option>
+            <option>Referred by an existing customer</option>
+            <option>WhatsApp message</option>
+            <option>Facebook / Instagram ad</option>
+            <option>Instagram profile</option>
+            <option>Google search / Google Maps</option>
+            <option>Hoarding / signage</option>
+            <option>Newspaper</option>
+            <option>Visited the marketing office</option>
+            <option>Channel partner / broker</option>
+            <option>Friend or family</option>
+            <option>Other</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Referred by <small>(optional)</small></span>
+          <span class="help">If someone recommended Aranya to you, share their name and mobile number.</span>
+          <input name="referred_by" maxlength="220">
+        </label>
+        <label class="field">
+          <span>Anything you would like us to know <small>(optional)</small></span>
+          <textarea name="message" rows="4" maxlength="2000"></textarea>
+        </label>
+        <fieldset class="question consent">
+          <legend>Consent <span class="required">*</span></legend>
+          <label><input type="checkbox" name="consent" value="yes" required> <span>I agree to be contacted by the Aranya sales team by phone, WhatsApp, SMS or email about this preview and the project.</span></label>
+        </fieldset>
+      </section>
+      </div>
+      <div class="submit-area">
+        <button type="button" class="back" id="back" hidden>Back</button>
+        <button type="submit" id="continue">Continue</button>
+      </div>
+      <p class="error" id="submit-error" role="alert" hidden></p>
+      <p class="terms" id="terms" hidden>Registration is an expression of interest only and is not a booking. Pricing and availability are subject to change without notice.</p>
+    </form>
+    <section class="card confirmation" id="confirmation" aria-labelledby="confirmation-title" tabindex="-1" hidden>
+      <h2 id="confirmation-title">Thank you</h2>
+      <p>Your request is registered. A member of the Aranya sales team will contact you on the number you provided to confirm your preview slot.</p>
+      <p>At the marketing office, you’ll see the scale model, walkthrough film and material samples, and receive the launch price sheet.</p>
+    </section>
+  </main>
+  <script>
+    const form = document.getElementById('preferred-access');
+    const button = document.getElementById('continue');
+    const back = document.getElementById('back');
+    const stage = document.getElementById('stage');
+    const counter = document.getElementById('counter');
+    const progress = document.getElementById('progress');
+    const terms = document.getElementById('terms');
+    const homeError = document.getElementById('home-error');
+    const submitError = document.getElementById('submit-error');
+    const confirmation = document.getElementById('confirmation');
+    const params = new URLSearchParams(location.search);
+    const heardAbout = form.elements.heard_about;
+    const source = params.get('heard_about');
+    if (Array.from(heardAbout.options).some(option => option.value === source)) heardAbout.value = source;
+    form.elements.referred_by.value = (params.get('referred_by') || '').slice(0, 220);
+
+    const sections = Array.from(form.querySelectorAll('.card'));
+    const steps = sections.flatMap(section => {
+      const heading = section.querySelector('h2');
+      heading.hidden = true;
+      return Array.from(section.querySelectorAll('.field, .question'), question => ({
+        question, section, title: heading.textContent,
+        controls: Array.from(question.querySelectorAll('input, select, textarea')),
+      }));
+    });
+    let current = 0;
+    let advanceTimer;
+    let submitting = false;
+    const mobile = matchMedia('(max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse)');
+    const reasons = {
+      name: 'So we can address you by name when we send your invitation.',
+      phone: 'So our team can contact you to confirm your preview slot.',
+      email: 'So we can send you the brochure and price sheet if you’d like them by email.',
+      locality: 'So we know where you’ll be travelling from for the preview.',
+      purchasing_as: 'So the right member of our team can help with your enquiry.',
+      home_sizes: 'So we can show you layouts that match what you’re looking for.',
+      budget: 'To show homes within your budget.',
+      purpose: 'To tailor the preview to your goals.',
+      timeline: 'So we can follow up at a time that suits your plans.',
+      funding: 'So we can have information about home loans ready if you need it.',
+      preview_times: 'To offer a time that suits you.',
+      party_size: 'To reserve seats for your group.',
+      heard_about: 'So we can understand how people find Aranya.',
+      referred_by: 'So we can record who recommended Aranya to you.',
+      message: 'So we can prepare for any questions or specific needs ahead of your visit.',
+      consent: 'So our team has your permission to follow up about the preview and project.',
+    };
+    for (const { question, controls } of steps) {
+      const name = controls[0].name;
+      const reason = document.createElement(question.matches('label') ? 'span' : 'p');
+      reason.className = 'reason';
+      reason.id = name + '-reason';
+      const heading = document.createElement('strong');
+      heading.textContent = 'Why we ask';
+      reason.append(heading, ' · ' + reasons[name]);
+      question.append(reason);
+      const described = question.matches('fieldset') ? question : controls[0];
+      if (question.matches('label')) {
+        const label = question.firstElementChild;
+        label.id = name + '-label';
+        described.setAttribute('aria-labelledby', label.id);
+      }
+      const existing = described.getAttribute('aria-describedby');
+      described.setAttribute('aria-describedby', existing ? existing + ' ' + reason.id : reason.id);
+    }
+    const pageSize = () => mobile.matches ? 2 : 1;
+    const visibleSteps = () => steps.slice(current, current + pageSize());
+    const isLastPage = () => current + pageSize() >= steps.length;
+    progress.max = steps.length;
+
+    function showStep(index, focus = true) {
+      clearTimeout(advanceTimer);
+      current = index;
+      const active = steps[index];
+      const visible = visibleSteps();
+      for (const section of sections) section.hidden = !visible.some(step => step.section === section);
+      for (const { question } of steps) {
+        question.hidden = !visible.some(step => step.question === question);
+        question.classList.remove('step-in');
+      }
+      const last = isLastPage();
+      stage.textContent = active.title;
+      const lastVisible = index + visible.length;
+      counter.textContent = visible.length === 1
+        ? `Question ${index + 1} of ${steps.length}`
+        : `Questions ${index + 1}–${lastVisible} of ${steps.length}`;
+      progress.value = lastVisible;
+      back.hidden = index === 0;
+      terms.hidden = !last;
+      button.textContent = last ? 'Register' : 'Continue';
+      submitError.hidden = true;
+      homeError.hidden = true;
+      for (const { question } of visible) question.classList.add('step-in');
+      if (focus) {
+        const heading = active.question.querySelector('legend, .field > span:first-child');
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
+    }
+
+    function validateStep({ question, controls }) {
+      if (question.id === 'home-sizes' && !controls.some(control => control.checked)) {
+        homeError.hidden = false;
+        controls[0].focus({ preventScroll: true });
+        return false;
+      }
+      for (const control of controls) {
+        if (control.required && control.type === 'text') control.value = control.value.trim();
+        if (!control.reportValidity()) return false;
+      }
+      return true;
+    }
+
+    back.addEventListener('click', () => {
+      if (current > 0 && !submitting) showStep(Math.max(0, current - pageSize()));
+    });
+
+
+    form.addEventListener('change', event => {
+      if (event.target.name === 'home_sizes') homeError.hidden = true;
+    });
+
+    form.addEventListener('click', event => {
+      if (!event.target.matches('input[type="radio"]:checked') || event.detail === 0) return;
+      if (mobile.matches && !visibleSteps().every(({ controls }) =>
+        controls.every(control => control.type === 'radio') && controls.some(control => control.checked))) return;
+      clearTimeout(advanceTimer);
+      advanceTimer = setTimeout(() => form.requestSubmit(), 190);
+    });
+
+    mobile.addEventListener('change', () => showStep(current - current % pageSize(), false));
+    showStep(0, false);
+    form.hidden = false;
+
+    form.addEventListener('submit', async event => {
+      event.preventDefault();
+      clearTimeout(advanceTimer);
+      if (submitting || !visibleSteps().every(validateStep)) return;
+      if (!isLastPage()) {
+        showStep(current + pageSize());
+        return;
+      }
+
+      submitError.hidden = true;
+      const data = new FormData(form);
+      const payload = Object.fromEntries(data);
+      payload.home_sizes = data.getAll('home_sizes');
+      payload.preview_times = data.getAll('preview_times');
+      payload.form_source = 'preferred_access';
+      payload.source_url = location.origin + location.pathname;
+      for (const key of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']) {
+        payload[key] = (params.get(key) || '').slice(0, 250);
+      }
+
+      submitting = true;
+      button.disabled = back.disabled = true;
+      button.textContent = 'Registering…';
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) throw new Error(result.error || 'Unable to register right now. Please try again.');
+        form.reset();
+        form.hidden = true;
+        confirmation.hidden = false;
+        confirmation.classList.add('step-in');
+        confirmation.focus({ preventScroll: true });
+      } catch (error) {
+        submitError.textContent = error.message === 'Failed to fetch' || error instanceof SyntaxError
+          ? 'Unable to register right now. Please try again.'
+          : error.message;
+        submitError.hidden = false;
+      } finally {
+        submitting = false;
+        button.disabled = back.disabled = false;
+        button.textContent = 'Register';
+      }
+    });
+  </script>
+</body>
+</html>

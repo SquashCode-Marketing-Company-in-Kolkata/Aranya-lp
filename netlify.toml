@@ -15,6 +15,11 @@
   to = "/coming-soon.html"
   status = 200
 
+[[redirects]]
+  from = "/preferred-access"
+  to = "/preferred-access.html"
+  status = 200
+
 [[headers]]
   for = "/dist/*"
   [headers.values]

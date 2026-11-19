@@ -144,6 +144,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  if (pathname === '/preferred-access' || pathname === '/preferred-access/') {
+    pathname = '/preferred-access.html';
+  }
+
   // 1. Coming Soon Route: /coming-soon or /coming-soon.html
   if (pathname === '/coming-soon' || pathname === '/coming-soon.html') {
     const ssrHtml = renderComingSoonSSR();

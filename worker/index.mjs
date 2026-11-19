@@ -24,7 +24,11 @@ export default {
       }
       body += decoder.decode();
     }
-    const result = await leads.handleLead(request.method, body, { webhookUrl: env.PABBLY_WEBHOOK_URL || '' });
+    const result = await leads.handleLead(request.method, body, {
+      webhookUrl: env.PABBLY_WEBHOOK_URL || '',
+      supabaseUrl: env.SUPABASE_URL || '',
+      supabaseSecretKey: env.SUPABASE_SECRET_KEY || '',
+    });
     return new Response(result.body, { status: result.statusCode, headers: result.headers });
   },
 };

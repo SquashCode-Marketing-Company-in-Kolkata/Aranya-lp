@@ -110,7 +110,7 @@ async function build() {
   if (path.dirname(siteDir) !== path.resolve(__dirname)) throw new Error('Invalid site output directory');
   fs.rmSync(siteDir, { recursive: true, force: true });
   fs.mkdirSync(path.join(siteDir, 'dist'), { recursive: true });
-  for (const file of ['index.html', 'coming-soon.html', 'thank-you.html', 'thank-you-coming-soon.html']) {
+  for (const file of ['index.html', 'coming-soon.html', 'thank-you.html', 'thank-you-coming-soon.html', 'preferred-access.html']) {
     const src = path.join(__dirname, file);
     if (fs.existsSync(src)) {
       fs.copyFileSync(src, path.join(siteDir, file));
