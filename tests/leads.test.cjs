@@ -63,16 +63,17 @@ test('routes each form to its configured destinations', async () => {
     preview_times: ['Weekend'], heard_about: 'Other', consent: 'yes',
   };
   const webhook = 'https://pabbly.example/webhook';
+  const preferredWebhook = 'https://pabbly.example/preferred-access';
   const supabase = 'https://project.supabase.co';
   for (const [source, destinations] of [
     ['main_enquiry', [supabase + '/rest/v1/landing_page_leads', webhook]],
     ['coming_soon', [webhook]],
-    ['preferred_access', [supabase + '/rest/v1/preferred_access_leads']],
+    ['preferred_access', [supabase + '/rest/v1/preferred_access_leads', preferredWebhook]],
   ]) {
     const calls = [];
     const input = source === 'preferred_access' ? { ...shared, ...preferred } : shared;
     const response = await handleLead('POST', JSON.stringify({ ...input, form_source: source }), {
-      webhookUrl: webhook, supabaseUrl: supabase, supabaseSecretKey: 'sb_secret_test',
+      webhookUrl: webhook, preferredWebhookUrl: preferredWebhook, supabaseUrl: supabase, supabaseSecretKey: 'sb_secret_test',
       fetchImpl: async (url, request) => {
         calls.push({ url: String(url), payload: JSON.parse(request.body) });
         return { ok: true };
@@ -82,7 +83,7 @@ test('routes each form to its configured destinations', async () => {
     assert.deepEqual(calls.map(call => call.url), destinations);
     for (const { url, payload } of calls) {
       assert.equal(payload.utm_campaign, 'launch');
-      if (url === webhook) assert.equal(payload.timezone, 'Asia/Kolkata');
+      if (url === webhook || url === preferredWebhook) assert.equal(payload.timezone, 'Asia/Kolkata');
       if (source === 'preferred_access') {
         assert.deepEqual(payload.home_sizes, preferred.home_sizes);
         assert.deepEqual(payload.preview_times, preferred.preview_times);
@@ -91,7 +92,7 @@ test('routes each form to its configured destinations', async () => {
     }
   }
   const unavailable = await handleLead('POST', JSON.stringify({ ...shared, ...preferred, form_source: 'preferred_access' }), {
-    webhookUrl: webhook, supabaseUrl: '', supabaseSecretKey: '',
+    webhookUrl: webhook, preferredWebhookUrl: '', supabaseUrl: '', supabaseSecretKey: '',
   });
   assert.equal(unavailable.statusCode, 503);
 });

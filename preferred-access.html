@@ -12,7 +12,7 @@
   <style>
     :root { color-scheme: light; --ink: #182a20; --muted: #526156; --line: #dce3d8; --paper: #f8f9f4; }
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100svh; display: grid; grid-template-columns: minmax(0, .86fr) minmax(0, 1fr); font: 1rem/1.45 "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
+    body { margin: 0; min-height: 100svh; display: grid; grid-template-columns: minmax(0, .86fr) minmax(0, 1fr); grid-template-rows: 1fr auto; font: 1rem/1.45 "DM Sans", system-ui, sans-serif; color: var(--ink); background: var(--paper); }
     h1, h2, legend, .field > span:first-child { font-family: "Cormorant Garamond", Georgia, serif; line-height: 1; margin: 0; }
     .hero { display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; padding: clamp(1.5rem, 5vw, 5rem); color: #fff; background: linear-gradient(180deg, #101e15b8, #101e1533 42%, #101e15f5 100%), #1a2e1a url('/uploads/shot_07_5kshot_07_5k.webp') center / cover; }
     .brand a { display: inline-flex; }
@@ -58,12 +58,21 @@
     .reason { display: block; margin: .55rem 0 0; color: var(--muted); font: 400 .875rem/1.35 "DM Sans", sans-serif; }
     .reason strong { font-weight: 600; color: var(--ink); }
     .field .reason { margin-top: 0; }
+    .why-trigger { display: none; }
+    .why-dialog { width: min(100% - 2rem, 26rem); max-height: calc(100dvh - 2rem); padding: 1.25rem; border: 1px solid var(--line); border-radius: 1rem; background: #fff; color: var(--ink); }
+    .why-dialog::backdrop { background: #10201799; }
+    .why-dialog dl { margin-block: 1rem; }
+    .why-dialog dt { font-weight: 600; }
+    .why-dialog dd { margin: .2rem 0 .8rem; color: var(--muted); }
     .error { color: #942b20; margin: .45rem 0 0; font-size: .875rem; }
     .terms { margin: .8rem 0 0; }
     .confirmation p { max-width: 29rem; }
+    .site-footer { grid-column: 1 / -1; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .2rem 1rem; padding: .85rem clamp(1rem, 5vw, 5rem); border-top: 1px solid #405747; background: #182a20; color: #e1e8df; font-size: .875rem; }
+    .site-footer a { color: #f4dcaa; text-underline-offset: .2em; }
+    .site-footer a:focus-visible { outline-color: #f4dcaa; }
     [hidden] { display: none !important; }
     @media (max-width: 61rem) {
-      body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+      body { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto; }
       .hero { padding: 1rem clamp(1rem, 5vw, 3rem); gap: .68rem; background: linear-gradient(90deg, #101e15f0, #101e1580), #1a2e1a url('/uploads/shot_07_5kshot_07_5k.webp') center 44% / cover; }
       .brand img { height: 2.35rem; }
       h1 { max-width: none; font-size: clamp(1.85rem, 4.5vw, 2.8rem); }
@@ -106,7 +115,6 @@
       .steps :is(.question, .field):not([hidden]) { margin-bottom: .4rem; }
       .choices label, .consent label { min-height: 2.15rem; padding-block: .2rem; }
       .submit-area button { min-height: 2.5rem; }
-      .reason { margin-top: .35rem; font-size: .8125rem; }
     }
     @media (max-height: 33rem) and (max-width: 61rem) {
       .intro { display: none; }
@@ -124,25 +132,74 @@
       .choices label, .consent label { font-size: .875rem; min-height: 2rem; }
     }
     @media (max-height: 34rem) and (min-width: 47.001rem) and (pointer: fine) {
-      body { grid-template-columns: minmax(0, .68fr) minmax(0, 1fr); grid-template-rows: auto; }
+      body { grid-template-columns: minmax(0, .68fr) minmax(0, 1fr); grid-template-rows: 1fr auto; }
       .hero, main { padding: 1rem clamp(1rem, 3vw, 2.5rem); }
       .hero { gap: .5rem; }
       h1 { font-size: clamp(2rem, 4vw, 3rem); }
       .steps { margin-block: .75rem; }
     }
     @media (max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse) {
-      .hero { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; justify-content: start; gap: .8rem; padding-block: .75rem; background: #182a20; }
-      .brand img { height: 1.65rem; }
+      body { background: #f7f7f1; }
+      .hero {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .6rem;
+        height: 30svh;
+        padding-block: .85rem;
+        color: #fff;
+        background: linear-gradient(180deg, #10201787, #10201700 40%, #102017d9),
+          #182a20 url('/uploads/shot_07_5kshot_07_5k.webp') 57% 54% / cover;
+      }
+      .brand a { display: flex; }
+      .brand img { height: 1.8rem; }
       .location, .intro { display: none; }
-      h1 { font-size: clamp(1.45rem, 4.5vw, 2rem); }
+      h1 { max-width: none; font-size: clamp(1.55rem, 6vw, 2.6rem); font-weight: 600; }
       main { align-content: start; padding-inline: clamp(1rem, 5vw, 2rem); }
       form, .confirmation { max-width: 30rem; }
       .stage { color: var(--ink); }
-      .choices label { border-color: transparent; border-radius: .4rem; background: #eef1ea; }
+      .counter { color: #47634f; font-weight: 500; }
+      .reason { display: none; }
+      .why-trigger { display: inline-block; background: transparent; color: #355541; padding-inline: .35rem; font-size: .875rem; text-decoration: underline; text-underline-offset: .2em; }
+      .why-trigger:hover { background: #e9eee2; }
+      .choices label { border-color: #dbe4d8; border-radius: .55rem; background: #fff; }
       .choices label:has(:checked) { border-color: #648364; background: #e1ecdd; }
       .consent label { padding-inline: 0; border-color: transparent; background: transparent; }
       .consent label:has(:checked) { border-color: transparent; background: transparent; }
       .submit-area button[type="submit"] { flex: 1; }
+      .back { border-color: #d2dbce; background: #f2f5ee; }
+      .site-footer { padding-block: .55rem; }
+    }
+    @media (max-width: 47rem) and (min-height: 44rem) {
+      main { padding-block: 1rem; }
+      form, .confirmation { padding: clamp(1rem, 4vw, 1.5rem); border: 1px solid #e1e6db; border-radius: 1rem; background: #fff; }
+      .steps { margin-block: 1.15rem; }
+      .steps :is(.question, .field):not([hidden]) { margin-bottom: 0; }
+      .steps .paired-question { margin-top: 1rem; }
+      .steps .paired-question::before { content: ""; display: block; width: 100%; border-top: 1px solid #e2e8df; margin-bottom: .85rem; }
+      .steps fieldset.paired-question { border-top: 1px solid #e2e8df; padding-top: .2rem; }
+      .steps fieldset.paired-question::before { display: none; }
+      .submit-area { gap: .7rem; }
+    }
+    @media (max-width: 47rem) and (max-height: 40rem) {
+      .hero { padding-block: .6rem; }
+      main { padding-block: .25rem; }
+      .steps { margin-block: .45rem; }
+      .choices label { min-height: 1.9rem; }
+      .site-footer { padding-block: .25rem; font-size: .8125rem; }
+      .company-suffix { display: none; }
+    }
+    @media (max-height: 28rem) and (min-width: 34rem) and (max-width: 47rem), (max-width: 60rem) and (max-height: 32rem) and (pointer: coarse) {
+      .hero { padding-block: .4rem; }
+      .brand img { height: 1.4rem; }
+      h1 { font-size: 1.6rem; }
+      main { padding-block: 0; }
+      form, .confirmation { max-width: 42rem; }
+      .steps:has(.question:not([hidden]) [name="budget"]) { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
+      .choices:has([name="purpose"], [name="preview_times"]) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .choices label { padding-block: .15rem; }
+      textarea { height: 3rem; }
+      .site-footer { padding-block: .2rem; font-size: .8125rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       .step-in { animation: none; }
@@ -292,16 +349,26 @@
       <div class="submit-area">
         <button type="button" class="back" id="back" hidden>Back</button>
         <button type="submit" id="continue">Continue</button>
+        <button type="button" class="why-trigger" id="why-trigger" aria-haspopup="dialog">Why we ask</button>
       </div>
       <p class="error" id="submit-error" role="alert" hidden></p>
       <p class="terms" id="terms" hidden>Registration is an expression of interest only and is not a booking. Pricing and availability are subject to change without notice.</p>
     </form>
+    <dialog class="why-dialog" id="why-dialog" aria-labelledby="why-title">
+      <h2 id="why-title">Why we ask</h2>
+      <dl id="why-copy"></dl>
+      <form method="dialog"><button type="submit" autofocus>Close</button></form>
+    </dialog>
     <section class="card confirmation" id="confirmation" aria-labelledby="confirmation-title" tabindex="-1" hidden>
       <h2 id="confirmation-title">Thank you</h2>
       <p>Your request is registered. A member of the Aranya sales team will contact you on the number you provided to confirm your preview slot.</p>
       <p>At the marketing office, you’ll see the scale model, walkthrough film and material samples, and receive the launch price sheet.</p>
     </section>
   </main>
+  <footer class="site-footer">
+    <span>© 2026 Indotech Infracon<span class="company-suffix"> Pvt. Ltd.</span></span>
+    <a href="/">Aranya home</a>
+  </footer>
   <script>
     const form = document.getElementById('preferred-access');
     const button = document.getElementById('continue');
@@ -370,6 +437,20 @@
     }
     const pageSize = () => mobile.matches ? 2 : 1;
     const visibleSteps = () => steps.slice(current, current + pageSize());
+    const whyDialog = document.getElementById('why-dialog');
+    const whyCopy = document.getElementById('why-copy');
+    document.getElementById('why-trigger').addEventListener('click', () => {
+      whyCopy.replaceChildren(...visibleSteps().flatMap(({ question, controls }) => {
+        const heading = question.querySelector('legend, .field > span:first-child').cloneNode(true);
+        heading.querySelectorAll('small, .required').forEach(label => label.remove());
+        const term = document.createElement('dt');
+        const description = document.createElement('dd');
+        term.textContent = heading.textContent.trim();
+        description.textContent = reasons[controls[0].name];
+        return [term, description];
+      }));
+      whyDialog.showModal();
+    });
     const isLastPage = () => current + pageSize() >= steps.length;
     progress.max = steps.length;
 
@@ -381,14 +462,14 @@
       for (const section of sections) section.hidden = !visible.some(step => step.section === section);
       for (const { question } of steps) {
         question.hidden = !visible.some(step => step.question === question);
-        question.classList.remove('step-in');
+        question.classList.remove('step-in', 'paired-question');
       }
       const last = isLastPage();
       stage.textContent = active.title;
       const lastVisible = index + visible.length;
       counter.textContent = visible.length === 1
         ? `Question ${index + 1} of ${steps.length}`
-        : `Questions ${index + 1}–${lastVisible} of ${steps.length}`;
+        : `${index + 1}–${lastVisible} of ${steps.length}`;
       progress.value = lastVisible;
       back.hidden = index === 0;
       terms.hidden = !last;
@@ -396,6 +477,7 @@
       submitError.hidden = true;
       homeError.hidden = true;
       for (const { question } of visible) question.classList.add('step-in');
+      visible[1]?.question.classList.add('paired-question');
       if (focus) {
         const heading = active.question.querySelector('legend, .field > span:first-child');
         heading.tabIndex = -1;

@@ -26,6 +26,7 @@ export default {
     }
     const result = await leads.handleLead(request.method, body, {
       webhookUrl: env.PABBLY_WEBHOOK_URL || '',
+      preferredWebhookUrl: env.PABBLY_PREFERRED_ACCESS_WEBHOOK_URL || '',
       supabaseUrl: env.SUPABASE_URL || '',
       supabaseSecretKey: env.SUPABASE_SECRET_KEY || '',
     });
