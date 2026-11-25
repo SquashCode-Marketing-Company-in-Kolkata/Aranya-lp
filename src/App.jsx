@@ -460,6 +460,7 @@ import { submitLead } from './submitLead';
                       <label style={{ display: 'block', fontFamily: 'DM Sans', fontSize: 9, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(26,46,26,0.5)', marginBottom: 7 }}>Apartment Type</label>
                       <select value={form.interest} style={{ ...inp(false), cursor: 'pointer' }} onChange={e => setForm(f => ({ ...f, interest: e.target.value }))}>
                         <option value="">Select type</option>
+                        <option value="2bhk">2 BHK — Aura</option>
                         <option value="3bhk">3 BHK — Celestial</option>
                         <option value="3bhk-t">3 BHK + Terrace — Garden Home</option>
                         <option value="4bhk">4 BHK — Prestige</option>
